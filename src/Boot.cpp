@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 #include "../include/Boot.h"
 
@@ -9,6 +10,7 @@ Boot::Boot(std::string file_path)
     //check file size and throw error if not 256 bytes
     file.seekg(0, std::ios::end);
     int file_size = file.tellg();
+    
     if(file_size != 256)
     {
         throw std::runtime_error("Boot ROM file is not 256 bytes");
