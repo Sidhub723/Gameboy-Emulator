@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+
 CPU::CPU(GBA *gba) : gba(gba) {
 
   PC = 0x0000;
@@ -11,7 +12,7 @@ CPU::CPU(GBA *gba) : gba(gba) {
   op = 0;
 
   // setting up the instruction map
-  instruction_map[0x31] = std::make_pair(&CPU::LDSP, 3);
+  instruction_map[0x31] = FuncDetails(&CPU::IMM16, &CPU::LDSP, 3);
 }
 
 void CPU::print_regs() {
@@ -37,8 +38,9 @@ void CPU::clock() {
     }
 
     // execute
-    (this->*(instruction_map[op].first))();
-    cycles = instruction_map[op].second;
+    (this->*(instruction_map[op].addr_mode))();
+    (this->*(instruction_map[op].ins))();
+    cycles = instruction_map[op].cycles;
   }
   cycles--;
 }
@@ -54,11 +56,22 @@ void CPU::read_ins() {
 }
 
 void CPU::LDSP() {
-  uint16_t imm = read16(PC);
-  PC += 2;
-  SP = imm;
+  SP = operand;
 }
 
-void CPU::XOR() {
-  AF.hi = AF.hi
+void CPU::XORA() {
+  AF.hi = AF.hi ^ AF.hi;
+}
+
+void CPU::IMP() {
+
+}
+
+void CPU::IMM16() {
+  operand = read16(PC);
+  PC += 2;
+}
+
+void CPU::IMM8() {
+  operand = read8(PC++);
 }
