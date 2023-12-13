@@ -22,3 +22,5 @@ Boot::Boot(std::string file_path) {
 }
 
 uint8_t Boot::read8(uint16_t offset) { return boot_rom[offset]; }
+
+uint16_t Boot::read16(uint16_t offset) { return *((uint16_t*)(boot_rom + offset)); }

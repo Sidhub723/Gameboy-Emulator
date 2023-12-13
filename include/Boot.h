@@ -8,6 +8,7 @@ class Boot {
 public:
   Boot(std::string file_path);
   uint8_t read8(uint16_t offset);
+  uint16_t read16(uint16_t offset);
 
 private:
   uint8_t boot_rom[0x100];
