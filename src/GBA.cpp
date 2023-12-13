@@ -15,8 +15,8 @@ GBA::~GBA() {
 }
 uint8_t GBA::cpu_read(uint16_t addr) {
 
-  if (boot_mode_enabled && addr >= 0x0000 && addr < 0x0100) {
-    return boot->read8(addr);
+  if (boot_mode_enabled && boot_range.in_range(addr)) {
+    return boot->read8(boot_range.offset_of(addr));
   }
 
   std::stringstream ss;

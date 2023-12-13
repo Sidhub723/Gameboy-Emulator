@@ -19,12 +19,12 @@ void CPU::clock() {
     read_ins();
 
     // decode
-
     if (instruction_map.find(op) == instruction_map.end()) {
       std::stringstream ss;
       ss << "Instruction not implemented: 0x" << std::hex << (int)op;
       throw std::runtime_error(ss.str());
     }
+
     // execute
     (this->*(instruction_map[op].first))();
     cycles = instruction_map[op].second;
@@ -34,4 +34,9 @@ void CPU::clock() {
 
 uint8_t CPU::read8(uint16_t addr) { return gba->cpu_read(addr); }
 
-void CPU::read_ins() { op = read8(PC++); }
+void CPU::read_ins() {
+  op = read8(PC++); 
+  if(PC == 0x0100){
+    gba->set_boot_mode(false);
+  }
+}

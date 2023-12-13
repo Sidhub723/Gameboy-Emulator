@@ -4,8 +4,20 @@
 #include <stdint.h>
 #include <string>
 
+#define BOOT_RANGE 0x0000, 0x0100
+
 class CPU;
 class Boot;
+
+struct Range
+{
+  uint16_t start;
+  uint16_t end;
+  Range(uint16_t start, uint16_t end) : start(start), end(end) {}
+
+  bool in_range(uint16_t addr) { return addr >= start && addr < end; }
+  uint16_t offset_of(uint16_t addr) { return addr - start; }
+};
 
 class GBA {
 public:
@@ -23,6 +35,9 @@ private:
 
   CPU *cpu;
   Boot *boot;
+
+private:
+  Range boot_range = Range(BOOT_RANGE);
 };
 
 #endif
