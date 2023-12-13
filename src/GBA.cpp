@@ -35,8 +35,16 @@ uint16_t GBA::cpu_read16(uint16_t addr) {
   throw std::runtime_error(ss.str());
 }
 
-void GBA::cpu_write8(uint16_t addr, uint8_t data) {}
+void GBA::cpu_write8(uint16_t addr, uint8_t data) {
+  std::stringstream ss;
+  ss << "Unmapped address for cpu_write8: 0x" << std::hex << addr;
+  throw std::runtime_error(ss.str());
+}
 
-void GBA::cpu_write16(uint16_t addr, uint16_t data) {}
+void GBA::cpu_write16(uint16_t addr, uint16_t data) {
+  std::stringstream ss;
+  ss << "Unmapped address for cpu_write16: 0x" << std::hex << addr;
+  throw std::runtime_error(ss.str());
+}
 
 void GBA::clock() { cpu->clock(); }

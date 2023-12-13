@@ -9,8 +9,8 @@ class CPU;
 
 union CPURegister {
   struct {
-    uint8_t hi; // A
     uint8_t lo; // C
+    uint8_t hi; // A
   };
   uint16_t full; // AC
 };
@@ -30,11 +30,23 @@ public:
   void clock();
   uint8_t read8(uint16_t addr);
   uint16_t read16(uint16_t addr);
+  void write8(uint16_t addr, uint8_t data);
+  void write16(uint16_t addr, uint16_t data);
 
 //SECTION - Utility
 private:
   void read_ins();
   void print_regs();
+
+  enum Flags {
+    zero = 0b01111111,
+    neg = 0b10111111,
+    half_carry = 0b11011111,
+    carry = 0b11101111
+  };
+
+  bool get_flag(uint8_t mask);
+  void set_flag(uint8_t mask, bool flag_val);
 //!SECTION
 
 //SECTION - Addressing Modes
@@ -42,12 +54,16 @@ private:
   void IMM16(); //Immediate Addressing Mode 16 bits
   void IMM8(); //Immediate Addressing Mode 8 bits
   void IMP(); //Implied Addressing Mode
+  void HLI(); //Auto Increment Mode
+  void HLD(); // Auto Decrement Mode
 //!SECTION
 
 //SECTION - Instructions
 private:
   void LDSP(); // LOAD INTO SP
-  void XORA(); 
+  void XORA(); // XOR
+  void LDHL(); // Load into Register HL
+  void WRA(); // Write A into Memory
 //!SECTION
 
 private:
@@ -55,6 +71,7 @@ private:
   uint16_t PC; // program counter
   uint8_t op;  // not riyal
   uint16_t operand; //not riyal - To store the value the instruction operates on
+  uint16_t operand_addr; //not riyal - To store address of the val
 
   CPURegister AF;
   CPURegister BC;
