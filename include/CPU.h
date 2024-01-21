@@ -59,7 +59,9 @@ private:
   void HLI(); //Auto Increment Mode
   void HLD(); // Auto Decrement Mode
 
-//!SECTION
+//!SECTION Prefix Instructions
+private:
+  void PFX();
 
 //SECTION - Instructions
 private:
@@ -67,9 +69,6 @@ private:
   void XORA(); // XOR
   void LDHL(); // Load into Register HL
   void WRA(); // Write A into Memory
-
-  void PFX(); //PREFIX instruction
-
 
 //!SECTION
 
@@ -97,6 +96,7 @@ private:
 
 private:
   //Add the other members you create here
+  uint8_t* pfx_register_operands_map[8];
 };
 
 #endif
