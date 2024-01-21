@@ -59,15 +59,6 @@ private:
   void HLI(); //Auto Increment Mode
   void HLD(); // Auto Decrement Mode
 
-  void PFXH();
-  void PFXA();
-  void PFXB();
-  void PFXC();
-  void PFXD();
-  void PFXL();
-  void PFXE();
-  void PFXHL_P();
-
 //!SECTION
 
 //SECTION - Instructions
@@ -78,15 +69,6 @@ private:
   void WRA(); // Write A into Memory
 
   void PFX(); //PREFIX instruction
-
-  void BIT7(); //Check if the 7th bit of the H register is set
-  void BIT6(); //Check if the 6th bit of the H register is set
-  void BIT5(); //Check if the 5th bit of the H register is set
-  void BIT4(); //Check if the 4th bit of the H register is set
-  void BIT3(); //Check if the 3th bit of the H register is set
-  void BIT2(); //Check if the 2th bit of the H register is set
-  void BIT1(); //Check if the 1th bit of the H register is set
-  void BIT0(); //Check if the 0th bit of the H register is set
 
 
 //!SECTION
@@ -107,9 +89,6 @@ private:
       instruction_map; // maps an opcode to a function(from CPU class) and the
                        // number of cycles it takes
 
-  std::unordered_map<uint8_t, FuncDetails>
-      prefix_map;
-
 private:
   uint8_t cycles;
 
@@ -117,8 +96,7 @@ private:
   GB *gb;
 
 private:
-  FuncDetails pfx_reg_array[8];
-  FuncDetails pfx_bit_array[8];
+  //Add the other members you create here
 };
 
 #endif
