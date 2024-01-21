@@ -60,6 +60,13 @@ private:
   void HLD(); // Auto Decrement Mode
 
   void PFXH();
+  void PFXA();
+  void PFXB();
+  void PFXC();
+  void PFXD();
+  void PFXL();
+  void PFXE();
+  void PFXHL_P();
 
 //!SECTION
 
@@ -73,7 +80,14 @@ private:
   void PFX(); //PREFIX instruction
 
   void BIT7(); //Check if the 7th bit of the H register is set
-  
+  void BIT6(); //Check if the 6th bit of the H register is set
+  void BIT5(); //Check if the 5th bit of the H register is set
+  void BIT4(); //Check if the 4th bit of the H register is set
+  void BIT3(); //Check if the 3th bit of the H register is set
+  void BIT2(); //Check if the 2th bit of the H register is set
+  void BIT1(); //Check if the 1th bit of the H register is set
+  void BIT0(); //Check if the 0th bit of the H register is set
+
 
 //!SECTION
 
@@ -101,6 +115,10 @@ private:
 
 private:
   GBA *gba;
+
+private:
+  FuncDetails pfx_reg_array[8];
+  FuncDetails pfx_bit_array[8];
 };
 
 #endif

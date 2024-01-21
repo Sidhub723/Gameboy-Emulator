@@ -28,3 +28,59 @@ void CPU::PFXH()
 {
   operand = HL.hi;
 }
+
+void CPU::BIT7()
+{
+    set_flag(Flags::zero, ~(operand & 0b10000000));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT6()
+{
+    set_flag(Flags::zero, ~(operand & 0b01000000));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT5()
+{
+    set_flag(Flags::zero, ~(operand & 0b00100000));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT4()
+{
+    set_flag(Flags::zero, ~(operand & 0b00010000));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT3()
+{
+    set_flag(Flags::zero, ~(operand & 0b00001000));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT2()
+{
+    set_flag(Flags::zero, ~(operand & 0b00000100));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT1()
+{
+    set_flag(Flags::zero, ~(operand & 0b00000010));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}
+
+void CPU::BIT0()
+{
+    set_flag(Flags::zero, ~(operand & 0b00000001));
+    set_flag(Flags::neg, 0);
+    set_flag(Flags::half_carry, 1);
+}

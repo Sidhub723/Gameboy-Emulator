@@ -11,11 +11,13 @@ CPU::CPU(GBA *gba) : gba(gba) {
   cycles = 0;
   op = 0;
 
+  
+
   // setting up the instruction map
   instruction_map[0x21] = FuncDetails(&CPU::IMM16, &CPU::LDHL, 3);
   instruction_map[0x31] = FuncDetails(&CPU::IMM16, &CPU::LDSP, 3);
   instruction_map[0xaf] = FuncDetails(&CPU::IMP, &CPU::XORA, 1);
-  instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2); 
+  instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2);
 
 
   //PREFIX Map
