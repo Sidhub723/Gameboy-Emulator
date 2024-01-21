@@ -18,6 +18,9 @@ uint8_t GBA::cpu_read8(uint16_t addr) {
   if (boot_mode_enabled && boot_range.in_range(addr)) {
     return boot->read8(boot_range.offset_of(addr));
   }
+  else if (vram_range.in_range(addr)){
+    return VRAM[vram_range.offset_of(addr)];
+  }
 
   std::stringstream ss;
   ss << "Unmapped address for cpu_read8: 0x" << std::hex << addr;
@@ -36,6 +39,11 @@ uint16_t GBA::cpu_read16(uint16_t addr) {
 }
 
 void GBA::cpu_write8(uint16_t addr, uint8_t data) {
+  if(vram_range.in_range(addr)){
+    VRAM[vram_range.offset_of(addr)] = data;
+    return;
+  }
+  
   std::stringstream ss;
   ss << "Unmapped address for cpu_write8: 0x" << std::hex << addr;
   throw std::runtime_error(ss.str());

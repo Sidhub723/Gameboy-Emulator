@@ -5,6 +5,7 @@
 #include <string>
 
 #define BOOT_RANGE 0x0000, 0x0100
+#define VRAM_RANGE 0x8000, 0xA000
 
 class CPU;
 class Boot;
@@ -40,6 +41,10 @@ private:
 
 private:
   Range boot_range = Range(BOOT_RANGE);
+  Range vram_range = Range(VRAM_RANGE);
+
+private:
+  uint8_t VRAM[8192] = {0xcd};
 };
 
 #endif

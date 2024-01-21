@@ -20,12 +20,13 @@ CPU::CPU(GBA *gba) : gba(gba) {
 }
 
 void CPU::print_regs() {
+  std::cout << std::endl;
   std::cout << "AF: 0x" << std::hex << AF.full << std::endl;
   std::cout << "BC: 0x" << std::hex << BC.full << std::endl;
   std::cout << "DE: 0x" << std::hex << DE.full << std::endl;
   std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
   std::cout << "SP: 0x" << std::hex << SP << std::endl;
-  std::cout << "PC: 0x" << std::hex << PC << std::endl;
+  std::cout << "PC: 0x" << std::hex << PC << std::endl << std::endl;
 }
 
 bool CPU::get_flag(uint8_t mask) {
@@ -41,6 +42,7 @@ void CPU::clock() {
   if (!cycles) {
     // fetch
     read_ins();
+    //print_regs();
 
     // decode
     if (instruction_map.find(op) == instruction_map.end()) {
@@ -71,6 +73,7 @@ void CPU::read_ins() {
   }
 }
 
+//SECTION - Instructions
 void CPU::LDSP() {
   SP = operand;
 }
@@ -90,7 +93,9 @@ void CPU::XORA() {
 void CPU::WRA() {
   write8(operand_addr, AF.hi);
 }
+//!SECTION
 
+//SECTION - Addressing Modes
 void CPU::IMP() {
 
 }
@@ -113,3 +118,4 @@ void CPU::HLD() {
   operand_addr = HL.full;
   operand = read8(HL.full--);
 }
+//!SECTION

@@ -34,10 +34,12 @@ public:
   void write16(uint16_t addr, uint16_t data);
 
 //SECTION - Utility
-private:
-  void read_ins();
+public:
   void print_regs();
 
+private:
+  void read_ins();
+  
   enum Flags {
     zero = 0b01111111,
     neg = 0b10111111,
