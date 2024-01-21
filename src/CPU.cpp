@@ -17,6 +17,11 @@ CPU::CPU(GBA *gba) : gba(gba) {
   instruction_map[0xaf] = FuncDetails(&CPU::IMP, &CPU::XORA, 1);
   instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2); 
 
+
+  //PREFIX Map
+  instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, 1);
+
+
 }
 
 void CPU::print_regs() {
@@ -96,8 +101,8 @@ void CPU::WRA() {
 //!SECTION
 
 //SECTION - Addressing Modes
-void CPU::IMP() {
-
+void CPU::IMP()
+{
 }
 
 void CPU::IMM16() {

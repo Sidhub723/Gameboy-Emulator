@@ -66,6 +66,9 @@ private:
   void XORA(); // XOR
   void LDHL(); // Load into Register HL
   void WRA(); // Write A into Memory
+
+  void PFX(); //PREFIX instruction
+
 //!SECTION
 
 private:
@@ -83,6 +86,9 @@ private:
   std::unordered_map<uint8_t, FuncDetails>
       instruction_map; // maps an opcode to a function(from CPU class) and the
                        // number of cycles it takes
+
+  std::unordered_map<uint8_t, FuncDetails>
+      prefix_map;
 
 private:
   uint8_t cycles;
