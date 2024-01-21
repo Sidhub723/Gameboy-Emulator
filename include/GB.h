@@ -1,5 +1,5 @@
-#ifndef GBA_H
-#define GBA_H
+#ifndef GB_H
+#define GB_H
 
 #include <stdint.h>
 #include <string>
@@ -20,10 +20,10 @@ struct Range
   uint16_t offset_of(uint16_t addr) { return addr - start; }
 };
 
-class GBA {
+class GB {
 public:
-  GBA(std::string boot_file_path);
-  ~GBA();
+  GB(std::string boot_file_path);
+  ~GB();
   uint8_t cpu_read8(uint16_t addr);
   void cpu_write8(uint16_t addr, uint8_t data);
   uint16_t cpu_read16(uint16_t addr);

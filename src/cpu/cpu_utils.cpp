@@ -1,4 +1,4 @@
-#include "../../include/GBA.h"
+#include "../../include/GB.h"
 #include "../../include/CPU.h"
 
 #include <iostream>
@@ -17,7 +17,7 @@ void CPU::set_flag(uint8_t mask, bool flag_val) {
 void CPU::read_ins() {
   op = read8(PC++); 
   if(PC == 0x0100){
-    gba->set_boot_mode(false);
+    gb->set_boot_mode(false);
   }
 }
 

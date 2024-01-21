@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <unordered_map>
 
-class GBA;
+class GB;
 class CPU;
 
 union CPURegister {
@@ -26,7 +26,7 @@ struct FuncDetails {
 
 class CPU {
 public:
-  CPU(GBA *gba);
+  CPU(GB *gb);
   void clock();
   uint8_t read8(uint16_t addr);
   uint16_t read16(uint16_t addr);
@@ -114,7 +114,7 @@ private:
   uint8_t cycles;
 
 private:
-  GBA *gba;
+  GB *gb;
 
 private:
   FuncDetails pfx_reg_array[8];

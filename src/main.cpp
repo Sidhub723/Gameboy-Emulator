@@ -1,9 +1,9 @@
-#include "../include/GBA.h"
+#include "../include/GB.h"
 #include <iostream>
 
 int main() {
-  GBA gba("boot/dmg_boot.bin");
+  GB gb("boot/dmg_boot.bin");
   while (true) {
-    gba.clock();
+    gb.clock();
   }
 }

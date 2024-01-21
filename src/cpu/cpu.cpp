@@ -1,10 +1,10 @@
 #include "../../include/CPU.h"
-#include "../../include/GBA.h"
+#include "../../include/GB.h"
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
 
-CPU::CPU(GBA *gba) : gba(gba) {
+CPU::CPU(GB *gb) : gb(gb) {
 
   PC = 0x0000;
   AF.full = BC.full = DE.full = HL.full = SP = 0xbeef;
