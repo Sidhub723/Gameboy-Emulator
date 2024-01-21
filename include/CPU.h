@@ -58,6 +58,9 @@ private:
   void IMP(); //Implied Addressing Mode
   void HLI(); //Auto Increment Mode
   void HLD(); // Auto Decrement Mode
+
+  void PFXH();
+
 //!SECTION
 
 //SECTION - Instructions
@@ -68,6 +71,9 @@ private:
   void WRA(); // Write A into Memory
 
   void PFX(); //PREFIX instruction
+
+  void BIT7(); //Check if the 7th bit of the H register is set
+  
 
 //!SECTION
 
