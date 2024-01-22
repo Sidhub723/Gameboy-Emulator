@@ -62,6 +62,8 @@ private:
 //!SECTION Prefix Instructions
 private:
   void PFX();
+  void SLA(); // Shift Left Arithmetically for r8
+  void SLA_HL(); //Shift Left Arithmetically for HL
 
 //SECTION - Instructions
 private:
