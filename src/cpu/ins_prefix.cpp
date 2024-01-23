@@ -27,7 +27,7 @@ void CPU::PFX()
     if(pfx_register_index != 0b110){
       pfx_working_register = pfx_register_operands_map[pfx_register_index];
       PFX_SET_R8;
-      cycles = (2+1);
+      cycles = (1+1);
     }
 
   }
