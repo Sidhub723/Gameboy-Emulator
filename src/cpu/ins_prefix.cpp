@@ -37,7 +37,7 @@ void CPU::PFX()
 void CPU::PFX_SET_HL(){
     operand = read8(HL.full);
     operand_addr = HL.full;
-    operand |= (pfx_bit_index << 1);
+    operand |= (1 << pfx_bit_index);
     write8(operand_addr, operand);
 
   }
