@@ -64,6 +64,8 @@ private:
   void PFX();
   void SLA(); // Shift Left Arithmetically for r8
   void SLA_HL(); //Shift Left Arithmetically for HL
+  void PFX_RES_R8();
+  void PFX_RES_HL();
 
 //SECTION - Instructions
 private:
@@ -99,6 +101,9 @@ private:
 private:
   //Add the other members you create here
   uint8_t* pfx_register_operands_map[8];
+  uint8_t pfx_register_index;
+  uint8_t* pfx_working_register;
+  uint8_t pfx_bit_index;
 };
 
 #endif
