@@ -1,2 +1,2 @@
 all:
-	g++-13 src/*.cpp src/*/*.cpp -o out
+	g++ src/*.cpp src/*/*.cpp -o out
