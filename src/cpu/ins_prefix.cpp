@@ -6,10 +6,6 @@
 
 //SECTION - PREFIX INSTRUCTIONS
 
-void CPU::PFX_SET_HL(){};
-void CPU::PFX_SET_R8(){};
-
-
 void CPU::PFX()
 {
   read_ins();
