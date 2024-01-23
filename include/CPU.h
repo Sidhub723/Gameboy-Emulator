@@ -62,6 +62,8 @@ private:
 //!SECTION Prefix Instructions
 private:
   void PFX();
+  void PFX_BIT_HL(); //prefix instruction for BIT Instructions with HL
+  void PFX_BIT(); //prefix instruction for BIT Instructions 
 
 //SECTION - Instructions
 private:
@@ -96,6 +98,8 @@ private:
 
 private:
   //Add the other members you create here
+  uint8_t pfx_bit;
+  uint8_t* pfx_bit_reg;
   uint8_t* pfx_register_operands_map[8];
 };
 
