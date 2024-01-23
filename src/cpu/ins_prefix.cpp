@@ -43,5 +43,5 @@ void CPU::PFX_SET_HL(){
   }
 
 void CPU::PFX_SET_R8(){
-  *pfx_working_register |= (pfx_bit_index << 1);
+  *pfx_working_register |= (1 << pfx_bit_index);
 }
