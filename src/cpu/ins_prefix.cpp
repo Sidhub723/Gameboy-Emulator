@@ -72,8 +72,9 @@ void CPU::PFX_BIT_HL(){ //here we will use the CPU::HL Register
 
     operand_addr=HL.full;
     operand = read8(HL.full);
-    operand = operand | ( 1<<pfx_bit ) ;
+    operand = operand & ( 1<<pfx_bit ) ;
     write8(operand_addr, operand);
+    set_flag(Flags::zero, ~( operand & ( 1<<pfx_bit ) ));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 1);
     
@@ -81,7 +82,8 @@ void CPU::PFX_BIT_HL(){ //here we will use the CPU::HL Register
 
 void CPU::PFX_BIT(){
 
-    *pfx_bit_reg = *pfx_bit_reg | ( 1<<pfx_bit ) ; // done as the pfx_bit 'th bit will be set
+    *pfx_bit_reg = *pfx_bit_reg & ( 1<<pfx_bit ) ; // done as the pfx_bit 'th bit will be set
+    set_flag(Flags::zero, ~( *pfx_bit_reg & ( 1<<pfx_bit ) ));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 1);
 
