@@ -8,7 +8,25 @@
 
 void CPU::PFX()
 {
-    read_ins();
+  read_ins();
+
+  
+  if (op & 0b11000000 != 0b00000000){ // Check if first 2 bits are 11
+    pfx_register_index = op & 0b00000111;
+    pfx_bit_index = (op & 0b00111000) >> 3;
+    
+    if(pfx_register_index == 0b110){  // HL
+      PFX_SET_HL();
+      cycles = (3+1);
+    }
+
+    if(pfx_register_index != 0b110){
+      pfx_working_register = pfx_register_operands_map[pfx_register_index];
+      PFX_SET_R8();
+      cycles = (1+1);
+    }
+
+  }
 
     if(op & 0b01000000 & ~( op & 0b10000000)){ //checking for bits starting from 01 and avoiding an 11 match
 
@@ -67,13 +85,24 @@ void CPU::PFX()
 
 }
 
+void CPU::PFX_SET_HL(){
+    operand = read8(HL.full);
+    operand_addr = HL.full;
+    operand |= (1 << pfx_bit_index);
+    write8(operand_addr, operand);
+
+  }
+
+void CPU::PFX_SET_R8(){
+  *pfx_working_register |= (1 << pfx_bit_index);
+}
+
 
 void CPU::PFX_BIT_HL(){ //here we will use the CPU::HL Register
 
     operand_addr=HL.full;
     operand = read8(HL.full);
-    operand = operand | ( 1<<pfx_bit ) ;
-    write8(operand_addr, operand);
+    set_flag(Flags::zero, ~( operand & ( 1<<pfx_bit ) ));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 1);
     
@@ -81,7 +110,7 @@ void CPU::PFX_BIT_HL(){ //here we will use the CPU::HL Register
 
 void CPU::PFX_BIT(){
 
-    *pfx_bit_reg = *pfx_bit_reg | ( 1<<pfx_bit ) ; // done as the pfx_bit 'th bit will be set
+    set_flag(Flags::zero, ~( *pfx_bit_reg & ( 1<<pfx_bit ) ));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 1);
 
