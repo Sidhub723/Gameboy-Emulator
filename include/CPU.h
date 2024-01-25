@@ -62,6 +62,8 @@ private:
 //!SECTION Prefix Instructions
 private:
   void PFX();
+  void PFX_SET_R8();
+  void PFX_SET_HL();
   void PFX_BIT_HL(); //prefix instruction for BIT Instructions with HL
   void PFX_BIT(); //prefix instruction for BIT Instructions 
   void SLA(); // Shift Left Arithmetically for r8
