@@ -29,7 +29,7 @@ CPU::CPU(GB *gb) : gb(gb) {
 
 
   //PREFIX Map
-  instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, 1);
+  instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, -1);
 
 
 }
@@ -51,8 +51,8 @@ void CPU::clock() {
 
     // execute
     (this->*(instruction_map[op].addr_mode))();
-    (this->*(instruction_map[op].ins))();
     cycles = instruction_map[op].cycles;
+    (this->*(instruction_map[op].ins))();
   }
   cycles--;
 }

@@ -135,7 +135,7 @@ void CPU::SLA()
 {
   uint8_t register_family = op & 0b00000111;
   uint8_t *reg = pfx_register_operands_map[register_family];
-  cycles = 2;
+  cycles = (1+1);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   if((*reg) & 0b10000000)
@@ -152,7 +152,7 @@ void CPU::SLA_HL()
 {
   uint8_t register_family = op & 0b00000111;
   uint8_t *reg = pfx_register_operands_map[register_family];
-  cycles = 4;
+  cycles = (3+1);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   if((*reg) & 0b10000000)
