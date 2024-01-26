@@ -134,8 +134,6 @@ void CPU::PFX_SLA_R8()
 
 void CPU::PFX_SLA_HL()
 {
-  uint8_t register_family = op & 0b00000111;
-  uint8_t *reg = pfx_register_operands_map[register_family];
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   if((*pfx_register_ptr) & 0b10000000)
