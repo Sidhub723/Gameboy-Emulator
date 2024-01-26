@@ -65,9 +65,9 @@ private:
   void PFX_SET_R8();
   void PFX_SET_HL();
   void PFX_BIT_HL(); //prefix instruction for BIT Instructions with HL
-  void PFX_BIT(); //prefix instruction for BIT Instructions 
-  void SLA(); // Shift Left Arithmetically for r8
-  void SLA_HL(); //Shift Left Arithmetically for HL
+  void PFX_BIT_R8(); //prefix instruction for BIT Instructions 
+  void PFX_SLA_R8(); // Shift Left Arithmetically for r8
+  void PFX_SLA_HL(); //Shift Left Arithmetically for HL
   void PFX_RES_R8();
   void PFX_RES_HL();
 
@@ -104,12 +104,12 @@ private:
 
 private:
   //Add the other members you create here
-  uint8_t pfx_bit;
-  uint8_t* pfx_bit_reg;
   uint8_t* pfx_register_operands_map[8];
-  uint8_t pfx_register_index;
-  uint8_t* pfx_working_register;
+  uint8_t* pfx_register_ptr;
+  uint8_t pfx_ins_family_index;
   uint8_t pfx_bit_index;
+  uint8_t pfx_register_index;
+  uint8_t pfx_rs_family_index;
 };
 
 #endif
