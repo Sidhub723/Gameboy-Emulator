@@ -86,6 +86,7 @@ private:
   uint8_t op;  // not riyal
   uint16_t operand; //not riyal - To store the value the instruction operates on
   uint16_t operand_addr; //not riyal - To store address of the val
+  uint8_t* register_operands_map[8];
 
   CPURegister AF;
   CPURegister BC;
@@ -104,12 +105,17 @@ private:
 
 private:
   //Add the other members you create here
-  uint8_t* pfx_register_operands_map[8];
   uint8_t* pfx_register_ptr;
   uint8_t pfx_ins_family_index;
   uint8_t pfx_bit_index;
   uint8_t pfx_register_index;
   uint8_t pfx_rs_family_index;
+
+private:
+  bool LoadInsHelper(); // executes and returns true if load ins is found
+  bool ArithmeticInsHelper(); // executes and returns true if arithmetic ins is found
+  uint8_t* temp_u8_ptr;
+  uint8_t* temp_u8_ptr_2;
 };
 
 #endif
