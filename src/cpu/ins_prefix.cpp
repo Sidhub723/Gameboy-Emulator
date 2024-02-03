@@ -20,7 +20,7 @@ void CPU::PFX()
     pfx_rs_family_index = (op & 0b00111000) >> 3; // equivalent to pfx_bit_index
     
     if (pfx_rs_family_index == 0b100){
-      if(pfx_register_index == 0b100 || pfx_register_index == 0b101){
+      if(pfx_register_index == 0b110){ //0b110 corresponds to (HL) operand
         PFX_SLA_HL();
         cycles = (3+1);
       }
