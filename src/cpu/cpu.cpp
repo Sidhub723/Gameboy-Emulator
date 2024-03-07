@@ -11,15 +11,15 @@ CPU::CPU(GB *gb) : gb(gb) {
   cycles = 0;
   op = 0;
 
-  //populating the register operands map
-  register_operands_map[0b000] = &(BC.hi);
-  register_operands_map[0b001] = &(BC.lo);
-  register_operands_map[0b010] = &(DE.hi);
-  register_operands_map[0b011] = &(DE.lo);
-  register_operands_map[0b100] = &(HL.hi);
-  register_operands_map[0b101] = &(HL.lo);
-  register_operands_map[0b110] = nullptr; //This is the (HL) pointer case
-  register_operands_map[0b111] = &(AF.hi);
+  //populating the prefix register operands map
+  pfx_register_operands_map[0b000] = &(BC.hi);
+  pfx_register_operands_map[0b001] = &(BC.lo);
+  pfx_register_operands_map[0b010] = &(DE.hi);
+  pfx_register_operands_map[0b011] = &(DE.lo);
+  pfx_register_operands_map[0b100] = &(HL.hi);
+  pfx_register_operands_map[0b101] = &(HL.lo);
+  pfx_register_operands_map[0b110] = nullptr; //This is the (HL) pointer case
+  pfx_register_operands_map[0b111] = &(AF.hi);
 
   // setting up the instruction map
   instruction_map[0x21] = FuncDetails(&CPU::IMM16, &CPU::LDHL, 3);
@@ -41,11 +41,7 @@ void CPU::clock() {
     // print_regs();
 
     // decode
-    if (LoadInsHelper() || ArithmeticInsHelper()){
-      cycles--; // Helper function itself executes the ins
-      return;
-    }
-    else if (instruction_map.find(op) == instruction_map.end()) {
+    if (instruction_map.find(op) == instruction_map.end()) {
       // print_regs();
       std::stringstream ss;
       ss << "Instruction not implemented: 0x" << std::hex << (int)op;

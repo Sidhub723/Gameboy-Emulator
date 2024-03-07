@@ -13,7 +13,7 @@ void CPU::PFX()
   pfx_ins_family_index = (op & 0b11000000) >> 6;
   pfx_bit_index = (op & 0b00111000) >> 3;
   pfx_register_index = (op & 0b00000111);
-  pfx_register_ptr = register_operands_map[pfx_register_index];
+  pfx_register_ptr = pfx_register_operands_map[pfx_register_index];
 
   if (pfx_ins_family_index == 0b00){
     // Rotate/Shift family
