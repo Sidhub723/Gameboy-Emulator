@@ -172,7 +172,7 @@ void CPU::PFX_RLC_R8()
 
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if (*pfx_register_ptr == 0) set_flag(Flags::zero, 1);
+  set_flag(Flags::zero, *pfx_register_ptr == 0);
   set_flag(Flags::carry, bit_7);
 }
 
@@ -187,7 +187,7 @@ void CPU::PFX_RLC_HL()
 
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if (*pfx_register_ptr == 0) set_flag(Flags::zero, 1);
+  set_flag(Flags::zero, operand == 0);
   set_flag(Flags::carry, bit_7);
 }
 
@@ -199,7 +199,7 @@ void CPU::PFX_RRC_R8()
 
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if (*pfx_register_ptr == 0) set_flag(Flags::zero, 1);
+  set_flag(Flags::zero, *pfx_register_ptr == 0);
   set_flag(Flags::carry, bit_0);
 }
 
@@ -214,6 +214,6 @@ void CPU::PFX_RRC_HL()
 
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if (*pfx_register_ptr == 0) set_flag(Flags::zero, 1);
+  set_flag(Flags::zero, operand == 0);
   set_flag(Flags::carry, bit_0);
 }
