@@ -153,8 +153,8 @@ void CPU::PFX_SWAP_R8()
 {    
     uint8_t upnibble = (*pfx_register_ptr)>>4;
     *pfx_register_ptr = (*pfx_register_ptr)<<4;
-    *pfx_register_ptr = *pfx_register_ptr+upnibble;
-    set_flag(Flags::zero, ~( *pfx_register_ptr ));
+    *pfx_register_ptr = *pfx_register_ptr|upnibble;
+    set_flag(Flags::zero, !(*pfx_register_ptr));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 0);
     set_flag(Flags::carry, 0);
@@ -165,10 +165,10 @@ void CPU::PFX_SWAP_HL(){
     operand = read8(HL.full); 
     uint8_t upnibble=operand>>4;
     operand=operand<<4;
-    operand=operand+upnibble;
+    operand=operand|upnibble;
     write8(operand_addr, operand);
 
-    set_flag(Flags::zero, ~( operand ));
+    set_flag(Flags::zero, !(operand));
     set_flag(Flags::neg, 0); 
     set_flag(Flags::half_carry, 0);
     set_flag(Flags::carry, 0);
