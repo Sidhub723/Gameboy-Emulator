@@ -9,6 +9,7 @@
 
 class CPU;
 class Boot;
+class VRAM;
 
 struct Range
 {
@@ -38,13 +39,11 @@ private:
 
   CPU *cpu;
   Boot *boot;
+  VRAM *vram;
 
 private:
   Range boot_range = Range(BOOT_RANGE);
   Range vram_range = Range(VRAM_RANGE);
-
-private:
-  uint8_t VRAM[8192] = {0xcd};
 };
 
 #endif

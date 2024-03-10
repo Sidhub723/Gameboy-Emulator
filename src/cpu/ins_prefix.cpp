@@ -30,7 +30,6 @@ void CPU::PFX()
       }
     }
 
-
     if(pfx_rs_family_index == 0b010) { //rl instruction
       if(pfx_register_index == 0b110){ //0b110 corresponds to (HL) operand
         PFX_RL_HL();
@@ -54,13 +53,15 @@ void CPU::PFX()
       }
     }
 
-
-
-    // Throwing error for all other families for now
-    if (pfx_rs_family_index != 0b100){
-      std::stringstream ss;
-      ss << "Instruction of PFX Rotate/Shift family not implemented: 0x" << std::hex << op;
-      throw std::runtime_error(ss.str()); 
+    if (pfx_rs_family_index == 0b110){ // SWAP instruction
+      if(pfx_register_index == 0b110){ 
+        PFX_SWAP_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_SWAP_R8();
+        cycles=(1+1);
+      }
     }
 
   }
@@ -240,4 +241,29 @@ void CPU::PFX_RR_R8() {
 
   (*pfx_register_ptr) = operand;
   
+}
+
+void CPU::PFX_SWAP_R8()
+{    
+    uint8_t upnibble = (*pfx_register_ptr)>>4;
+    *pfx_register_ptr = (*pfx_register_ptr)<<4;
+    *pfx_register_ptr = *pfx_register_ptr|upnibble;
+    set_flag(Flags::zero, !(*pfx_register_ptr));
+    set_flag(Flags::neg, 0); 
+    set_flag(Flags::half_carry, 0);
+    set_flag(Flags::carry, 0);
+}
+
+void CPU::PFX_SWAP_HL(){
+    operand_addr=HL.full;
+    operand = read8(HL.full); 
+    uint8_t upnibble=operand>>4;
+    operand=operand<<4;
+    operand=operand|upnibble;
+    write8(operand_addr, operand);
+
+    set_flag(Flags::zero, !(operand));
+    set_flag(Flags::neg, 0); 
+    set_flag(Flags::half_carry, 0);
+    set_flag(Flags::carry, 0);
 }

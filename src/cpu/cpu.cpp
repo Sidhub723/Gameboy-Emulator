@@ -27,7 +27,6 @@ CPU::CPU(GB *gb) : gb(gb) {
   instruction_map[0xaf] = FuncDetails(&CPU::IMP, &CPU::XORA, 1);
   instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2);
 
-
   //PREFIX Map
   instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, -1);
 
@@ -37,7 +36,7 @@ CPU::CPU(GB *gb) : gb(gb) {
 void CPU::clock() {
   if (!cycles) {
     // fetch
-    print_regs();
+    //print_regs();
     read_ins();
     // print_regs();
 
