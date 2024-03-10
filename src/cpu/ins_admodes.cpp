@@ -30,7 +30,7 @@ void CPU::HLD() {
 
 void CPU::LDfromR8() {
   // Made for the 4 LOAD ins rows
-  operand = *pfx_register_operands_map[op & 0b111]; // assuming tmp != nullptr for (HL)
+  operand = *register_operands_map[op & 0b111]; // assuming tmp != nullptr for (HL)
 }
 
 void CPU::LDfromHL8() {

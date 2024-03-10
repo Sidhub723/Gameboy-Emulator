@@ -16,7 +16,7 @@ void CPU::LDHL16() {
 
 void CPU::LDR8() {
   // Made for the 4 LOAD ins rows 
-  uint8_t *tmp = pfx_register_operands_map[(op>>3) & 0b111];
+  uint8_t *tmp = register_operands_map[(op>>3) & 0b111];
   *tmp = operand;
 }
 
@@ -28,7 +28,7 @@ void CPU::LDIMM8() {
     write8(HL.full, operand);
   }
   else {
-    *pfx_register_operands_map[index] = operand;
+    *register_operands_map[index] = operand;
   }
 }
 

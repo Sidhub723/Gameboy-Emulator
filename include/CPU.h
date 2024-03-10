@@ -102,7 +102,7 @@ private:
   void LDSP(); // Load INTO SP
   void LDHL16(); // Load into Register HL
   void LDR8(); // Load into corresponding register from "operand"
-  void LDIMM8(); // Load corresponding to the order in pfx_register_operands_map
+  void LDIMM8(); // Load corresponding to the order in register_operands_map
   void LDHL8(); // Load into addr pointed by HL
   void LDA(); // Load into register A
   void LDBC8();
@@ -151,7 +151,7 @@ private:
 
 private:
   //Add the other members you create here
-  uint8_t* pfx_register_operands_map[8];
+  uint8_t* register_operands_map[8];
   uint8_t* pfx_register_ptr;
   uint8_t pfx_ins_family_index;
   uint8_t pfx_bit_index;
