@@ -70,21 +70,16 @@ private:
   void PFX_SLA_HL(); // Shift Left Arithmetically for HL
   void PFX_RES_R8();
   void PFX_RES_HL();
+  void PFX_SRA_R8(); //prefix instruction for arithmetic right shift
+  void PFX_SRA_HL(); //prefix instruction for arithmetic right shift with HL
+  void PFX_SRL_R8(); //prefix instruction for logical right shift
+  void PFX_SRL_HL(); //prefix instruction for logical right shift with HL
   void PFX_RL_HL(); // Rotate Left for HL
   void PFX_RL_R8(); // Rotate Left for r8
   void PFX_RR_HL(); // Rotate Right for HL
   void PFX_RR_R8(); // Rotate Right for r8
   void PFX_SWAP_HL();
-  void PFX_SWAP_R8();    Settings
-
-Added RL and RR instructions and fixed SLA_HL function #26
-Open
-Madhav160804 wants to merge 2 commits into dev from Madhav
-+114 −13
-Conversation 1
-Commits 2
-Checks 0
-Files changed 2
+  void PFX_SWAP_R8();   
 
 //SECTION - Instructions
 private:
