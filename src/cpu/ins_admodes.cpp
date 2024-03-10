@@ -27,3 +27,35 @@ void CPU::HLD() {
   operand_addr = HL.full;
   operand = read8(HL.full--);
 }
+
+void CPU::LDfromR8() {
+  // Made for the 4 LOAD ins rows
+  uint8_t *tmp = pfx_register_operands_map[op & 0b111];
+  operand = *tmp; // assuming tmp != nullptr for (HL)
+}
+
+void CPU::LDfromHL8() {
+  operand = read8(HL.full);
+}
+
+void CPU::LDfromA() {
+  operand = AF.hi;
+}
+
+void CPU::LDfromC() {
+  operand = BC.lo;
+}
+
+void CPU::LDfromBC8() {
+  operand = read8(BC.full);
+}
+
+void CPU::LDfromDE8() {
+  operand = read8(DE.full);
+}
+
+void CPU::LDfromU16addr() {
+  operand = read8(read16(PC));
+  PC+=2;
+}
+

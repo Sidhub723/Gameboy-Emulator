@@ -36,6 +36,9 @@ public:
 //SECTION - Utility
 public:
   void print_regs();
+  void initialize_ins_map();
+  void initialize_load_ins();
+  void initialize_arith_ins();
 
 private:
   void read_ins();
@@ -58,6 +61,13 @@ private:
   void IMP(); //Implied Addressing Mode
   void HLI(); //Auto Increment Mode
   void HLD(); // Auto Decrement Mode
+  void LDfromR8(); // Loads corresponding register value into "operand"
+  void LDfromHL8(); // Loads value at (HL) into "operand"
+  void LDfromA(); // Loads from A - special case
+  void LDfromC();
+  void LDfromBC8();
+  void LDfromDE8();
+  void LDfromU16addr();
 
 //!SECTION Prefix Instructions
 private:
@@ -73,9 +83,28 @@ private:
 
 //SECTION - Instructions
 private:
-  void LDSP(); // LOAD INTO SP
+
+  // Load instructions
+  void LDSP(); // Load INTO SP
+  void LDHL16(); // Load into Register HL
+  void LDR8(); // Load into corresponding register from "operand"
+  void LDB(); // Load into register B
+  void LDC(); // Load into register C
+  void LDD(); // Load into register D
+  void LDE(); // Load into register E
+  void LDH(); // Load into register H
+  void LDL(); // Load into register L
+  void LDHL8(); // Load into addr pointed by HL
+  void LDA(); // Load into register A
+  void LDBC8();
+  void LDDE8();
+  void LDHLinc();
+  void LDHLdec();
+  void LDU16addr();
+  void LDZ1(); // Zero page write memory : handles 0xE0 & 0xE2
+  void LDZ2(); // Zero page write register : handles 0xF0 & 0xF2
+
   void XORA(); // XOR
-  void LDHL(); // Load into Register HL
   void WRA(); // Write A into Memory
 
 //!SECTION

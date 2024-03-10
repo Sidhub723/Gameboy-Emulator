@@ -7,8 +7,75 @@ void CPU::LDSP() {
   SP = operand;
 }
 
-void CPU::LDHL() {
+void CPU::LDHL16() {
   HL.full = operand;
+}
+
+void CPU::LDR8() {
+  // Made for the 4 LOAD ins rows 
+  uint8_t *tmp = pfx_register_operands_map[(op>>3) & 0b111];
+  *tmp = operand;
+}
+
+void CPU::LDB() {
+  BC.hi = operand;
+}
+
+void CPU::LDC() {
+  BC.lo = operand;
+}
+
+void CPU::LDD() {
+  DE.hi = operand;
+}
+
+void CPU::LDE() {
+  DE.lo = operand;
+}
+
+void CPU::LDH() {
+  HL.hi = operand;
+}
+
+void CPU::LDL() {
+  HL.lo = operand;
+}
+
+void CPU::LDHL8() {
+  write8(HL.full, operand);
+}
+
+void CPU::LDA() {
+  AF.hi = operand;
+}
+
+void CPU::LDBC8() {
+  write8(BC.full, operand);
+}
+
+void CPU::LDDE8() {
+  write8(DE.full, operand);
+}
+
+void CPU::LDHLinc() {
+  write8(HL.full++, operand);
+}
+
+void CPU::LDHLdec() {
+  write8(HL.full--, operand);
+}
+
+void CPU::LDU16addr() {
+  write8(read16(PC), operand);
+  PC+=2;
+}
+
+void CPU::LDZ1() {
+  write8(0xFF00 + operand, AF.hi);
+}
+
+void CPU::LDZ2() {
+  AF.hi = read8(0xFF00 + operand);
 }
 
 void CPU::XORA() {
