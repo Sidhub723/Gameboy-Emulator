@@ -70,6 +70,10 @@ private:
   void PFX_SLA_HL(); // Shift Left Arithmetically for HL
   void PFX_RES_R8();
   void PFX_RES_HL();
+  void PFX_RLC_R8();
+  void PFX_RLC_HL();
+  void PFX_RRC_R8();
+  void PFX_RRC_HL();
   void PFX_SRA_R8(); //prefix instruction for arithmetic right shift
   void PFX_SRA_HL(); //prefix instruction for arithmetic right shift with HL
   void PFX_SRL_R8(); //prefix instruction for logical right shift

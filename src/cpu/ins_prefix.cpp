@@ -30,6 +30,17 @@ void CPU::PFX()
       }
     }
 
+    if (pfx_rs_family_index == 0b000){
+      //RLC
+      if(pfx_register_index == 0b110){
+        PFX_RLC_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_RLC_R8();
+        cycles = (1+1);
+      }
+    }
 
     if (pfx_bit_index == 0b101){ // SRA
       if(pfx_register_index == 0b110){
@@ -42,6 +53,18 @@ void CPU::PFX()
       }
     }
 
+    if (pfx_rs_family_index == 0b001){
+      //RRC
+      if(pfx_register_index == 0b110){
+        PFX_RRC_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_RRC_R8();
+        cycles = (1+1);
+      }
+    }
+    
     if (pfx_bit_index == 0b111){ // SRL
       if(pfx_register_index == 0b110){
         PFX_SRL_HL();
@@ -377,4 +400,58 @@ void CPU::PFX_SRL_R8()
   if(*pfx_register_ptr==0){
     set_flag(Flags::zero, 1);
   }
+}
+
+void CPU::PFX_RLC_R8()
+{
+  uint8_t bit_7 = (*pfx_register_ptr) >> 7;
+  *pfx_register_ptr <<= 1;
+  *pfx_register_ptr |= bit_7;
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::zero, *pfx_register_ptr == 0);
+  set_flag(Flags::carry, bit_7);
+}
+
+void CPU::PFX_RLC_HL()
+{
+  operand = read8(HL.full);
+  operand_addr = HL.full;
+  uint8_t bit_7 = (operand) >> 7;
+  operand <<= 1;
+  operand |= bit_7;
+  write8(operand_addr, operand);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::zero, operand == 0);
+  set_flag(Flags::carry, bit_7);
+}
+
+void CPU::PFX_RRC_R8()
+{
+  uint8_t bit_0 = (*pfx_register_ptr) & 1;
+  *pfx_register_ptr >>= 1;
+  *pfx_register_ptr |= (bit_0 << 7);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::zero, *pfx_register_ptr == 0);
+  set_flag(Flags::carry, bit_0);
+}
+
+void CPU::PFX_RRC_HL()
+{
+  operand = read8(HL.full);
+  operand_addr = HL.full;
+  uint8_t bit_0 = (operand) & 1;
+  operand >>= 1;
+  operand |= (bit_0 << 7);
+  write8(operand_addr, operand);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::zero, operand == 0);
+  set_flag(Flags::carry, bit_0);
 }
