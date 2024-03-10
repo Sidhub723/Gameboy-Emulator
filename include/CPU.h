@@ -67,11 +67,24 @@ private:
   void PFX_BIT_HL(); //prefix instruction for BIT Instructions with HL
   void PFX_BIT_R8(); //prefix instruction for BIT Instructions 
   void PFX_SLA_R8(); // Shift Left Arithmetically for r8
-  void PFX_SLA_HL(); //Shift Left Arithmetically for HL
+  void PFX_SLA_HL(); // Shift Left Arithmetically for HL
   void PFX_RES_R8();
   void PFX_RES_HL();
+  void PFX_RL_HL(); // Rotate Left for HL
+  void PFX_RL_R8(); // Rotate Left for r8
+  void PFX_RR_HL(); // Rotate Right for HL
+  void PFX_RR_R8(); // Rotate Right for r8
   void PFX_SWAP_HL();
-  void PFX_SWAP_R8();
+  void PFX_SWAP_R8();    Settings
+
+Added RL and RR instructions and fixed SLA_HL function #26
+Open
+Madhav160804 wants to merge 2 commits into dev from Madhav
++114 −13
+Conversation 1
+Commits 2
+Checks 0
+Files changed 2
 
 //SECTION - Instructions
 private:

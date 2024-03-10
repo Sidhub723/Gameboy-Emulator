@@ -20,7 +20,7 @@ void CPU::PFX()
     pfx_rs_family_index = (op & 0b00111000) >> 3; // equivalent to pfx_bit_index
     
     if (pfx_rs_family_index == 0b100){
-      if(pfx_register_index == 0b100 || pfx_register_index == 0b101){
+      if(pfx_register_index == 0b110){ //0b110 corresponds to (HL) operand
         PFX_SLA_HL();
         cycles = (3+1);
       }
@@ -30,8 +30,31 @@ void CPU::PFX()
       }
     }
 
-    if (pfx_rs_family_index == 0b110){
-      if(pfx_register_index == 0b110){
+    if(pfx_rs_family_index == 0b010) { //rl instruction
+      if(pfx_register_index == 0b110){ //0b110 corresponds to (HL) operand
+        PFX_RL_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_RL_R8();
+        cycles = (1+1);
+      }
+
+    }
+
+    if(pfx_rs_family_index == 0b011) { //rr instruction
+      if(pfx_register_index == 0b110){ //0b110 corresponds to (HL) operand
+        PFX_RR_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_RR_R8();
+        cycles = (1+1);
+      }
+    }
+
+    if (pfx_rs_family_index == 0b110){ // SWAP instruction
+      if(pfx_register_index == 0b110){ 
         PFX_SWAP_HL();
         cycles = (3+1);
       }
@@ -85,7 +108,7 @@ void CPU::PFX_SET_HL()
     operand |= (1 << pfx_bit_index);
     write8(operand_addr, operand);
 }
-
+ 
 void CPU::PFX_SET_R8()
 {
   *pfx_register_ptr |= (1 << pfx_bit_index);
@@ -127,10 +150,7 @@ void CPU::PFX_SLA_R8()
 {
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if((*pfx_register_ptr) & 0b10000000)
-    set_flag(Flags::carry, 1);
-  else
-    set_flag(Flags::carry, 0);
+  set_flag(Flags::carry, ((*pfx_register_ptr) & 0b10000000));
   *pfx_register_ptr = (*pfx_register_ptr<<1);
   if(*pfx_register_ptr==0)
     set_flag(Flags::zero, 1);
@@ -138,15 +158,89 @@ void CPU::PFX_SLA_R8()
 
 void CPU::PFX_SLA_HL()
 {
+  //here we will use the CPU::HL register
+  operand_addr=HL.full;
+  operand = read8(operand_addr);
+
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  if((*pfx_register_ptr) & 0b10000000)
-    set_flag(Flags::carry, 1);
-  else
-    set_flag(Flags::carry, 0);
-  *pfx_register_ptr = (*pfx_register_ptr<<1);
-  if(*pfx_register_ptr==0)
+  set_flag(Flags::carry, (operand & 0b10000000));
+  operand <<= 1;
+  if(operand==0)
     set_flag(Flags::zero, 1);
+
+  write8(operand_addr,operand);
+  
+}
+
+void CPU::PFX_RL_HL() {
+  operand_addr = HL.full;
+  operand = read8(operand_addr);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  uint8_t temp = get_flag(Flags::carry);
+  set_flag(Flags::carry,((operand)&(0b10000000)));
+  (operand) <<= 1;
+  if(temp) //checking if previous carry flag was set or not
+    (operand) |= (0b00000001);
+  if((operand) == 0)
+    set_flag(Flags::zero,1);
+
+  write8(operand_addr,operand);
+
+}
+
+void CPU::PFX_RL_R8() {
+  operand = (*pfx_register_ptr);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  uint8_t temp = get_flag(Flags::carry);
+  set_flag(Flags::carry,((operand)&(0b10000000)));
+  (operand) <<= 1;
+  if(temp) //checking if previous carry flag was set or not
+    (operand) |= (0b00000001);
+  if((operand) == 0)
+    set_flag(Flags::zero,1);
+
+  (*pfx_register_ptr) = operand;
+}
+
+void CPU::PFX_RR_HL() {
+  operand_addr = HL.full;
+  operand = read8(operand_addr);
+  
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  uint8_t temp = get_flag(Flags::carry);
+  set_flag(Flags::carry,((operand)&(0b00000001)));
+  (operand) >>= 1;
+  if(temp) //checking if previous carry flag was set or not
+    (operand) |= (0b10000000);
+  if((operand) == 0)
+    set_flag(Flags::zero,1);
+
+  write8(operand_addr, operand);
+
+
+}
+
+void CPU::PFX_RR_R8() {
+  operand = (*pfx_register_ptr);
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  uint8_t temp = get_flag(Flags::carry);
+  set_flag(Flags::carry,((operand)&(0b00000001)));
+  (operand) >>= 1;
+  if(temp) //checking if previous carry flag was set or not
+    (operand) |= (0b10000000);
+  if((operand) == 0)
+    set_flag(Flags::zero,1);
+
+  (*pfx_register_ptr) = operand;
+  
 }
 
 void CPU::PFX_SWAP_R8()
