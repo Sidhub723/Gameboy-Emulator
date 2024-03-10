@@ -33,7 +33,7 @@ void CPU::initialize_ins_map(){
 
   initialize_load_ins();
 
-  
+  initialize_arithmetic_ins();
 }
 
 
@@ -56,14 +56,13 @@ void CPU::initialize_load_ins() {
   }
 
   // Initializing map for +6 & +E LD ins
-  instruction_map[0x06] = FuncDetails(&CPU::LDB, &CPU::IMM8, 2);
-  instruction_map[0x16] = FuncDetails(&CPU::LDD, &CPU::IMM8, 2);
-  instruction_map[0x26] = FuncDetails(&CPU::LDH, &CPU::IMM8, 2);
-  instruction_map[0x36] = FuncDetails(&CPU::LDHL8, &CPU::IMM8, 3);
-  instruction_map[0x0E] = FuncDetails(&CPU::LDC, &CPU::IMM8, 2);
-  instruction_map[0x1E] = FuncDetails(&CPU::LDE, &CPU::IMM8, 2);
-  instruction_map[0x2E] = FuncDetails(&CPU::LDL, &CPU::IMM8, 2);
-  instruction_map[0x3E] = FuncDetails(&CPU::LDA, &CPU::IMM8, 2);
+  for(uint8_t op_iter=0x06; op_iter<=0x3E; op_iter+=0x8){
+    uint8_t cyc;
+    if((op_iter>>3) == 0b110) cyc=3; // (HL) case
+    else cyc=2;
+
+    instruction_map[op_iter] = FuncDetails(&CPU::LDIMM8, &CPU::IMM8, cyc);
+  }
 
   // Initializing map for +2 & +A LD ins
   instruction_map[0x02] = FuncDetails(&CPU::LDBC8, &CPU::LDfromA, 2);
@@ -82,6 +81,63 @@ void CPU::initialize_load_ins() {
   instruction_map[0xE2] = FuncDetails(&CPU::LDZ1, &CPU::LDfromC, 2);
   instruction_map[0xF0] = FuncDetails(&CPU::LDZ2, &CPU::IMM8, 3);
   instruction_map[0xF2] = FuncDetails(&CPU::LDZ2, &CPU::LDfromC, 2);
+}
+
+void CPU::initialize_arithmetic_ins(){
+  // Initializing map for the 4 rows of Arithmetic ins
+  for(uint8_t op_iter=0x80; op_iter<0xC0; op_iter++){
+    uint8_t register_index = op_iter & 0b111;
+    switch ((op_iter>>3) & 0b111) { // operation type
+      case 0b000:
+        // ADD
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::ADDA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::ADDA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b001:
+        // ADC
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::ADCA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::ADCA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b010:
+        // SUB
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::SUBA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::SUBA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b011:
+        // SBC
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::SBCA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::SBCA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b100:
+        // AND
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::ANDA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::ANDA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b101:
+        // XOR
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::XORA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::XORA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b110:
+        // OR
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::ORA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::ORA, &CPU::LDfromR8, 1);
+        break;
+
+      case 0b111:
+        // CP
+        if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::CPA, &CPU::LDfromHL8, 2);
+        else instruction_map[op_iter] = FuncDetails(&CPU::CPA, &CPU::LDfromR8, 1);
+        break;
+    }
+  }
+
 }
 
 void CPU::print_regs() {

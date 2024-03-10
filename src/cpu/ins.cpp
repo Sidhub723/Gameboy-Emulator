@@ -3,6 +3,9 @@
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
 
+
+// Load instructions
+
 void CPU::LDSP() {
   SP = operand;
 }
@@ -17,28 +20,16 @@ void CPU::LDR8() {
   *tmp = operand;
 }
 
-void CPU::LDB() {
-  BC.hi = operand;
-}
-
-void CPU::LDC() {
-  BC.lo = operand;
-}
-
-void CPU::LDD() {
-  DE.hi = operand;
-}
-
-void CPU::LDE() {
-  DE.lo = operand;
-}
-
-void CPU::LDH() {
-  HL.hi = operand;
-}
-
-void CPU::LDL() {
-  HL.lo = operand;
+void CPU::LDIMM8() {
+  // made for x6 & xE LOAD ins
+  uint8_t index = (op>>3) & 0b111;
+  if(index == 0b110) {
+    // (HL) case
+    write8(HL.full, operand);
+  }
+  else {
+    *pfx_register_operands_map[index] = operand;
+  }
 }
 
 void CPU::LDHL8() {
@@ -78,12 +69,42 @@ void CPU::LDZ2() {
   AF.hi = read8(0xFF00 + operand);
 }
 
+// Arithmetic instructions
+
+void CPU::ADDA() {
+  
+}
+
+void CPU::ADCA() {
+  
+}
+
+void CPU::SUBA() {
+  
+}
+
+void CPU::SBCA() {
+  
+}
+
+void CPU::ANDA() {
+  
+}
+
 void CPU::XORA() {
   AF.hi = AF.hi ^ AF.hi;
   set_flag(Flags::zero, 1);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, 0);
+}
+
+void CPU::ORA() {
+  
+}
+
+void CPU::CPA() {
+  
 }
 
 void CPU::WRA() {

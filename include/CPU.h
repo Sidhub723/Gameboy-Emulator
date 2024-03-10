@@ -38,7 +38,7 @@ public:
   void print_regs();
   void initialize_ins_map();
   void initialize_load_ins();
-  void initialize_arith_ins();
+  void initialize_arithmetic_ins();
 
 private:
   void read_ins();
@@ -102,12 +102,7 @@ private:
   void LDSP(); // Load INTO SP
   void LDHL16(); // Load into Register HL
   void LDR8(); // Load into corresponding register from "operand"
-  void LDB(); // Load into register B
-  void LDC(); // Load into register C
-  void LDD(); // Load into register D
-  void LDE(); // Load into register E
-  void LDH(); // Load into register H
-  void LDL(); // Load into register L
+  void LDIMM8(); // Load corresponding to the order in pfx_register_operands_map
   void LDHL8(); // Load into addr pointed by HL
   void LDA(); // Load into register A
   void LDBC8();
@@ -118,7 +113,16 @@ private:
   void LDZ1(); // Zero page write memory : handles 0xE0 & 0xE2
   void LDZ2(); // Zero page write register : handles 0xF0 & 0xF2
 
-  void XORA(); // XOR
+  // Arithmetic instructions
+  void ADDA(); // add
+  void ADCA(); // add with carry
+  void SUBA(); // subtract
+  void SBCA(); // subtract with carry
+  void ANDA();
+  void XORA();
+  void ORA();
+  void CPA(); // copy
+  
   void WRA(); // Write A into Memory
 
 //!SECTION
