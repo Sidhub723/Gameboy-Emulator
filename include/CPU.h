@@ -70,6 +70,8 @@ private:
   void PFX_SLA_HL(); //Shift Left Arithmetically for HL
   void PFX_RES_R8();
   void PFX_RES_HL();
+  void PFX_SWAP_HL();
+  void PFX_SWAP_R8();
 
 //SECTION - Instructions
 private:
