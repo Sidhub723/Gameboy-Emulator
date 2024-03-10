@@ -30,6 +30,28 @@ void CPU::PFX()
       }
     }
 
+    if (pfx_bit_index == 0b101){ // SRA
+      if(pfx_register_index == 0b110){
+        PFX_SRA_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_SRA_R8();
+        cycles = (1+1);
+      }
+    }
+
+    if (pfx_bit_index == 0b111){ // SRL
+      if(pfx_register_index == 0b110){
+        PFX_SRL_HL();
+        cycles = (3+1);
+      }
+      else{
+        PFX_SRL_R8();
+        cycles = (1+1);
+      }
+    }
+
     // Throwing error for all other families for now
     if (pfx_rs_family_index != 0b100){
       std::stringstream ss;
@@ -143,4 +165,93 @@ void CPU::PFX_SLA_HL()
   *pfx_register_ptr = (*pfx_register_ptr<<1);
   if(*pfx_register_ptr==0)
     set_flag(Flags::zero, 1);
+}
+
+void CPU::PFX_SRA_HL()
+{
+  operand = read8(HL.full);
+  operand_addr = HL.full;
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  if(operand & 0b00000001){
+    set_flag(Flags::carry, 1);
+  }
+  else
+    set_flag(Flags::carry, 0);
+  
+  if(operand & 0b10000000){
+    operand = (operand>>1) | 0b10000000; // After right shifting by 1b, preserve the MSB
+  }
+  else{
+    operand = (operand>>1); // If MSB is zero, just do right shift
+  }
+  if(operand==0){
+    set_flag(Flags::zero, 1);
+  }
+
+  write8(operand_addr, operand);  
+}
+
+
+void CPU::PFX_SRA_R8()
+{
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  if(*pfx_register_ptr & 0b00000001){
+    set_flag(Flags::carry, 1);
+  }
+  else{
+    set_flag(Flags::carry, 0);
+  }
+  if(*pfx_register_ptr & 0b10000000){
+    *pfx_register_ptr = (*pfx_register_ptr>>1) | 0b10000000; // After right shifting by 1b, preserve the MSB
+  }
+  else{
+    *pfx_register_ptr = (*pfx_register_ptr>>1); // If MSB is zero, just do right shift
+  }
+  if(*pfx_register_ptr==0){
+    set_flag(Flags::zero, 1);
+  }
+}
+
+
+void CPU::PFX_SRL_HL()
+{
+  operand = read8(HL.full);
+  operand_addr = HL.full;
+
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  if(operand & 0b00000001){
+    set_flag(Flags::carry, 1);
+  }
+  else
+    set_flag(Flags::carry, 0);
+  
+  operand = operand >> 1;
+
+  if(operand==0){
+    set_flag(Flags::zero, 1);
+  }
+
+  write8(operand_addr, operand);
+}
+
+
+void CPU::PFX_SRL_R8()
+{
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  if(*pfx_register_ptr & 0b00000001){
+    set_flag(Flags::carry, 1);
+  }
+  else
+    set_flag(Flags::carry, 0);
+  
+  *pfx_register_ptr = (*pfx_register_ptr >> 1);
+
+  if(*pfx_register_ptr==0){
+    set_flag(Flags::zero, 1);
+  }
 }
