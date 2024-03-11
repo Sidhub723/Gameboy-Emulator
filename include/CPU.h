@@ -40,6 +40,9 @@ public:
   void initialize_ins_map();
   void initialize_load_ins();
   void initialize_arithmetic_ins();
+  void initialize_push_pop_ins();
+  void initialize_ret_ins();
+  void initialize_rst_ins();
 
 private:
   void read_ins();
@@ -134,6 +137,19 @@ private:
   void DEC16();
   
   void WRA(); // Write A into Memory
+  void ADD_SP(); // Add s8 to SP
+
+  void POP(); // Pop from stack
+  void PUSH(); // Push into stack
+
+  void RET(); // Return
+  void RETI(); // Return from interrupt
+  void RET_NZ(); // Return if not zero
+  void RET_Z(); // Return if zero
+  void RET_NC(); // Return if not carry
+  void RET_C(); // Return if carry
+
+  void RST(); // Restart
 
 //!SECTION
 
@@ -170,6 +186,7 @@ private:
 private:
   uint8_t* register_operands_map[8];
   uint16_t* u16_register_operands_map[4];
+  uint16_t* u16_push_pop_register_operands_map[4];
 };
 
 #endif
