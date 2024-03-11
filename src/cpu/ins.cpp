@@ -216,3 +216,54 @@ void CPU::PUSH() {
   SP -= 2;
   write16(SP, val);
 }
+
+void CPU::RET() {
+  PC = read16(SP);
+  SP += 2;
+}
+
+void CPU::RETI() {
+  // PC = read16(SP);
+  // SP += 2;
+  // gb->set_ime(true);
+  std::stringstream ss;
+  ss << "RETI is being called, but it is not implemented yet";
+  throw std::runtime_error(ss.str());
+} 
+
+void CPU::RET_NZ() {
+  if(!get_flag(Flags::zero)) {
+    PC = read16(SP);
+    SP += 2;
+  }
+}
+
+void CPU::RET_Z() {
+  if(get_flag(Flags::zero)) {
+    PC = read16(SP);
+    SP += 2;
+  }
+}
+
+void CPU::RET_NC() {
+  if(!get_flag(Flags::carry)) {
+    PC = read16(SP);
+    SP += 2;
+  }
+}
+
+void CPU::RET_C() {
+  if(get_flag(Flags::carry)) {
+    PC = read16(SP);
+    SP += 2;
+  }
+}
+
+// REVIEW: The RST ins might not be implemented correctly
+void CPU::RST() {
+  SP -= 2;
+  write16(SP, PC);
+  PC = (op & 0b00111000);
+  PC >>= 3;
+  PC *= 8;
+}

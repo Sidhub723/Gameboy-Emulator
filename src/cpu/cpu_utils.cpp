@@ -43,6 +43,7 @@ void CPU::initialize_register_maps() {
   u16_push_pop_register_operands_map[0b01] = &(DE.full);
   u16_push_pop_register_operands_map[0b10] = &(HL.full);
   u16_push_pop_register_operands_map[0b11] = &(AF.full);
+
 }
 
 void CPU::initialize_ins_map(){
@@ -60,6 +61,30 @@ void CPU::initialize_ins_map(){
   initialize_arithmetic_ins();
 
   initialize_push_pop_ins();
+
+  initialize_ret_ins();
+
+  initialize_rst_ins();
+}
+
+// REVIEW : The RESET and RETURN instructions need to be verified
+void CPU::initialize_rst_ins() {
+  // Initializing map for RST ins
+  for(uint8_t op_iter=0xC7; op_iter<=0xFF; op_iter+=0x8){
+    instruction_map[op_iter] = FuncDetails(&CPU::RST, &CPU::IMP, 4);
+  }
+}
+
+void CPU::initialize_ret_ins() {
+  // Initializing map for RET ins
+  instruction_map[0xC9] = FuncDetails(&CPU::RET, &CPU::IMP, 4);
+  instruction_map[0xD9] = FuncDetails(&CPU::RETI, &CPU::IMP, 4);
+
+  // Initializing map for RET cc ins
+  instruction_map[0xC0] = FuncDetails(&CPU::RET_NZ, &CPU::IMP, (get_flag(Flag::zero) ? 2 : 5));
+  instruction_map[0xC8] = FuncDetails(&CPU::RET_Z, &CPU::IMP, (get_flag(Flag::zero) ? 5 : 2));
+  instruction_map[0xD0] = FuncDetails(&CPU::RET_NC, &CPU::IMP, (get_flag(Flag::carry) ? 2 : 5));
+  instruction_map[0xD8] = FuncDetails(&CPU::RET_C, &CPU::IMP, (get_flag(Flag::carry) ? 5 : 2));
 }
 
 void CPU::initialize_push_pop_ins() {
