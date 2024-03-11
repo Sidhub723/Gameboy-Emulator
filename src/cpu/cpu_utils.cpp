@@ -28,7 +28,6 @@ void CPU::initialize_ins_map(){
   // setting up the instruction map
   instruction_map[0x21] = FuncDetails(&CPU::IMM16, &CPU::LDHL16, 3);
   instruction_map[0x31] = FuncDetails(&CPU::IMM16, &CPU::LDSP, 3);
-  instruction_map[0xaf] = FuncDetails(&CPU::IMP, &CPU::XORA, 1);
   instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2);
 
   initialize_load_ins();
