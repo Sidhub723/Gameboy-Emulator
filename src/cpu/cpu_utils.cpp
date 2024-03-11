@@ -70,8 +70,8 @@ void CPU::initialize_ins_map(){
 // REVIEW : The RESET and RETURN instructions need to be verified
 void CPU::initialize_rst_ins() {
   // Initializing map for RST ins
-  for(uint8_t op_iter=0xC7; op_iter<=0xFF; op_iter+=0x8){
-    instruction_map[op_iter] = FuncDetails(&CPU::RST, &CPU::IMP, 4);
+  for(uint16_t op_iter=0xC7; op_iter<=0xFF; op_iter+=0x8){
+    instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::RST, &CPU::IMP, 4);
   }
 }
 
@@ -87,33 +87,34 @@ void CPU::initialize_ret_ins() {
   instruction_map[0xD8] = FuncDetails(&CPU::RET_C, &CPU::IMP, (get_flag(Flags::carry) ? 5 : 2));
 }
 
+// NOTE: THE FOR LOOPS NEED UINT16_T TO AVOID OVERFLOW
 void CPU::initialize_push_pop_ins() {
   // Initializing map for PUSH ins
-  for(uint8_t op_iter=0xC5; op_iter<=0xF5; op_iter+=0x10){
-    instruction_map[op_iter] = FuncDetails(&CPU::PUSH, &CPU::IMP, 4);
+  for(uint16_t op_iter=0xC5; op_iter<=0xF5; op_iter+=0x10){
+    instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::PUSH, &CPU::IMP, 4);
   }
 
   // Initializing map for POP ins
-  for(uint8_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10){
-    instruction_map[op_iter] = FuncDetails(&CPU::POP, &CPU::IMP, 3);
+  for(uint16_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10){
+    instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::POP, &CPU::IMP, 3);
   }
 }
 
 void CPU::initialize_load_ins() {
   // Initializing map for the 4 rows of LOAD ins
-  for(uint8_t op_iter=0x40; op_iter<0x80; op_iter++){
-    if(op_iter=0x76) continue; // HALT ins
+  for(uint16_t op_iter=0x40; op_iter<0x80; op_iter++){
+    if(op_iter == 0x76) continue; // HALT ins
 
     if(op_iter>=0x70 && op_iter<0x80){
       // (HL) case LHS
-      instruction_map[op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
+      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
     }
     else if(op_iter & 0b111 == 0b110){
       // (HL) case RHS
-      instruction_map[op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
+      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
     }
     else {
-      instruction_map[op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromR8, 1);
+      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromR8, 1);
     }
   }
 
