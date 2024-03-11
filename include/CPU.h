@@ -43,6 +43,8 @@ public:
   void initialize_push_pop_ins();
   void initialize_ret_ins();
   void initialize_rst_ins();
+  void initialize_jmp_ins();
+  void initialize_call_ins(); 
 
 private:
   void read_ins();
@@ -150,6 +152,19 @@ private:
   void RET_C(); // Return if carry
 
   void RST(); // Restart
+
+  void JMP(); // Jump
+  void JMP_HL(); // Jump to HL
+  void JMP_NZ(); // Jump if not zero
+  void JMP_Z(); // Jump if zero
+  void JMP_NC(); // Jump if not carry
+  void JMP_C(); // Jump if carry
+
+  void CALL(); // Call
+  void CALL_NZ(); // Call if not zero
+  void CALL_Z(); // Call if zero
+  void CALL_NC(); // Call if not carry
+  void CALL_C(); // Call if carry
 
 //!SECTION
 

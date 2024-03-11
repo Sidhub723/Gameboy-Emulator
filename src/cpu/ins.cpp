@@ -267,3 +267,74 @@ void CPU::RST() {
   PC >>= 3;
   PC *= 8;
 }
+
+void CPU::JMP() {
+  PC = operand;
+}
+
+void CPU::JMP_HL() {
+  PC = HL.full;
+}
+
+void CPU::JMP_NZ() {
+  if(!get_flag(Flags::zero)) {
+    PC = operand;
+  }
+}
+
+void CPU::JMP_Z() {
+  if(get_flag(Flags::zero)) {
+    PC = operand;
+  }
+}
+
+void CPU::JMP_NC() {
+  if(!get_flag(Flags::carry)) {
+    PC = operand;
+  }
+}
+
+void CPU::JMP_C() {
+  if(get_flag(Flags::carry)) {
+    PC = operand;
+  }
+}
+
+void CPU::CALL() {
+  SP -= 2;
+  write16(SP, PC);
+  PC = operand; 
+}
+
+void CPU::CALL_NZ() {
+  if(!get_flag(Flags::zero)) {
+    SP -= 2;
+    write16(SP, PC);
+    PC = operand;
+  }
+}
+
+void CPU::CALL_Z() {
+  if(get_flag(Flags::zero)) {
+    SP -= 2;
+    write16(SP, PC);
+    PC = operand;
+  }
+}
+
+void CPU::CALL_NC() {
+  if(!get_flag(Flags::carry)) {
+    SP -= 2;
+    write16(SP, PC);
+    PC = operand;
+  }
+}
+
+void CPU::CALL_C() {
+  if(get_flag(Flags::carry)) {
+    SP -= 2;
+    write16(SP, PC);
+    PC = operand;
+  }
+}
+

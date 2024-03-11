@@ -65,6 +65,21 @@ void CPU::initialize_ins_map(){
   initialize_ret_ins();
 
   initialize_rst_ins();
+
+  initialize_jmp_ins();
+
+  initialize_call_ins();
+}
+
+void CPU::initialize_call_ins() {
+  // Initializing map for CALL ins
+  instruction_map[0xCD] = FuncDetails(&CPU::CALL, &CPU::IMM16, 6);
+
+  // Initializing map for CALL cc ins
+  instruction_map[0xC4] = FuncDetails(&CPU::CALL_NZ, &CPU::IMM16, (get_flag(Flags::zero) ? 3 : 6));
+  instruction_map[0xCC] = FuncDetails(&CPU::CALL_Z, &CPU::IMM16, (get_flag(Flags::zero) ? 6 : 3));
+  instruction_map[0xD4] = FuncDetails(&CPU::CALL_NC, &CPU::IMM16, (get_flag(Flags::carry) ? 3 : 6));
+  instruction_map[0xDC] = FuncDetails(&CPU::CALL_C, &CPU::IMM16, (get_flag(Flags::carry) ? 6 : 3));
 }
 
 // REVIEW : The RESET and RETURN instructions need to be verified
@@ -85,6 +100,17 @@ void CPU::initialize_ret_ins() {
   instruction_map[0xC8] = FuncDetails(&CPU::RET_Z, &CPU::IMP, (get_flag(Flags::zero) ? 5 : 2));
   instruction_map[0xD0] = FuncDetails(&CPU::RET_NC, &CPU::IMP, (get_flag(Flags::carry) ? 2 : 5));
   instruction_map[0xD8] = FuncDetails(&CPU::RET_C, &CPU::IMP, (get_flag(Flags::carry) ? 5 : 2));
+}
+
+void CPU::initialize_jmp_ins() {
+  // Initializing map for JMP ins
+  instruction_map[0xC3] = FuncDetails(&CPU::JMP, &CPU::IMM16, 4);
+  instruction_map[0xE9] = FuncDetails(&CPU::JMP_HL, &CPU::IMP, 4);
+
+  instruction_map[0xC2] = FuncDetails(&CPU::JMP_NZ, &CPU::IMM16, (get_flag(Flags::zero) ? 3 : 4));
+  instruction_map[0xD2] = FuncDetails(&CPU::JMP_NC, &CPU::IMM16, (get_flag(Flags::carry) ? 3 : 4));
+  instruction_map[0xCA] = FuncDetails(&CPU::JMP_Z, &CPU::IMM16, (get_flag(Flags::zero) ? 4 : 3));
+  instruction_map[0xDA] = FuncDetails(&CPU::JMP_C, &CPU::IMM16, (get_flag(Flags::carry) ? 4 : 3));
 }
 
 // NOTE: THE FOR LOOPS NEED UINT16_T TO AVOID OVERFLOW
