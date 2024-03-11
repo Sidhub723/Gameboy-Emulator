@@ -81,10 +81,10 @@ void CPU::initialize_ret_ins() {
   instruction_map[0xD9] = FuncDetails(&CPU::RETI, &CPU::IMP, 4);
 
   // Initializing map for RET cc ins
-  instruction_map[0xC0] = FuncDetails(&CPU::RET_NZ, &CPU::IMP, (get_flag(Flag::zero) ? 2 : 5));
-  instruction_map[0xC8] = FuncDetails(&CPU::RET_Z, &CPU::IMP, (get_flag(Flag::zero) ? 5 : 2));
-  instruction_map[0xD0] = FuncDetails(&CPU::RET_NC, &CPU::IMP, (get_flag(Flag::carry) ? 2 : 5));
-  instruction_map[0xD8] = FuncDetails(&CPU::RET_C, &CPU::IMP, (get_flag(Flag::carry) ? 5 : 2));
+  instruction_map[0xC0] = FuncDetails(&CPU::RET_NZ, &CPU::IMP, (get_flag(Flags::zero) ? 2 : 5));
+  instruction_map[0xC8] = FuncDetails(&CPU::RET_Z, &CPU::IMP, (get_flag(Flags::zero) ? 5 : 2));
+  instruction_map[0xD0] = FuncDetails(&CPU::RET_NC, &CPU::IMP, (get_flag(Flags::carry) ? 2 : 5));
+  instruction_map[0xD8] = FuncDetails(&CPU::RET_C, &CPU::IMP, (get_flag(Flags::carry) ? 5 : 2));
 }
 
 void CPU::initialize_push_pop_ins() {
