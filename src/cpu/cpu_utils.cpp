@@ -21,6 +21,24 @@ void CPU::read_ins() {
   }
 }
 
+void CPU::initialize_register_maps() {
+  // populating the register operands map
+  register_operands_map[0b000] = &(BC.hi);
+  register_operands_map[0b001] = &(BC.lo);
+  register_operands_map[0b010] = &(DE.hi);
+  register_operands_map[0b011] = &(DE.lo);
+  register_operands_map[0b100] = &(HL.hi);
+  register_operands_map[0b101] = &(HL.lo);
+  register_operands_map[0b110] = nullptr; //This is the (HL) pointer case
+  register_operands_map[0b111] = &(AF.hi);
+
+  // populating the u16 register operands map
+  u16_register_operands_map[0b00] = &(BC.full);
+  u16_register_operands_map[0b01] = &(DE.full);
+  u16_register_operands_map[0b10] = &(HL.full);
+  u16_register_operands_map[0b11] = &(SP);
+}
+
 void CPU::initialize_ins_map(){
   //PREFIX Map
   instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, -1);
@@ -77,10 +95,20 @@ void CPU::initialize_load_ins() {
   // others
   instruction_map[0xEA] = FuncDetails(&CPU::LDU16addr, &CPU::LDfromA, 4);
   instruction_map[0xFA] = FuncDetails(&CPU::LDA, &CPU::LDfromU16addr, 4);
+  
   instruction_map[0xE0] = FuncDetails(&CPU::LDZ1, &CPU::IMM8, 3);
   instruction_map[0xE2] = FuncDetails(&CPU::LDZ1, &CPU::LDfromC, 2);
   instruction_map[0xF0] = FuncDetails(&CPU::LDZ2, &CPU::IMM8, 3);
   instruction_map[0xF2] = FuncDetails(&CPU::LDZ2, &CPU::LDfromC, 2);
+  
+  instruction_map[0x01] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
+  instruction_map[0x11] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
+  instruction_map[0x21] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
+  instruction_map[0x31] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
+
+  instruction_map[0x08] = FuncDetails(&CPU::LD_u16_SP, &CPU::IMP, 5);
+  instruction_map[0xF9] = FuncDetails(&CPU::LD_SP_HL, &CPU::IMP, 2);
+
 }
 
 void CPU::initialize_arithmetic_ins(){
@@ -136,6 +164,35 @@ void CPU::initialize_arithmetic_ins(){
         else instruction_map[op_iter] = FuncDetails(&CPU::CPA, &CPU::LDfromR8, 1);
         break;
     }
+
+    // Initializing INC/DEC ins
+    // INC
+    for(uint8_t op_iter=0x04; op_iter<=0x3C; op_iter+=0x8){
+      if(op_iter>>3 == 0b110)
+        instruction_map[op_iter] = FuncDetails(&CPU::INCHL, &CPU::IMP, 3); // (HL) case
+      else
+        instruction_map[op_iter] = FuncDetails(&CPU::INCR8, &CPU::IMP, 1);
+    }
+    // DEC
+    for(uint8_t op_iter=0x05; op_iter<=0x3D; op_iter+=0x8){
+      if(op_iter>>3 == 0b110)
+        instruction_map[op_iter] = FuncDetails(&CPU::DECHL, &CPU::IMP, 3); // (HL) case
+      else
+        instruction_map[op_iter] = FuncDetails(&CPU::DECR8, &CPU::IMP, 1);
+    }
+
+    // Initializing R16 INC/DEC ins
+    // INC
+    instruction_map[0x03] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+    instruction_map[0x13] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+    instruction_map[0x23] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+    instruction_map[0x33] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+    // DEC
+    instruction_map[0x0B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+    instruction_map[0x1B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+    instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+    instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+
   }
 
 }

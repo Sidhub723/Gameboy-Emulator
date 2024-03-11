@@ -36,6 +36,7 @@ public:
 //SECTION - Utility
 public:
   void print_regs();
+  void initialize_register_maps();
   void initialize_ins_map();
   void initialize_load_ins();
   void initialize_arithmetic_ins();
@@ -112,6 +113,9 @@ private:
   void LDU16addr();
   void LDZ1(); // Zero page write memory : handles 0xE0 & 0xE2
   void LDZ2(); // Zero page write register : handles 0xF0 & 0xF2
+  void LD_R16_u16();
+  void LD_u16_SP();
+  void LD_SP_HL();
 
   // Arithmetic instructions
   void ADDA(); // add
@@ -122,6 +126,12 @@ private:
   void XORA();
   void ORA();
   void CPA(); // copy
+  void INCR8(); // Increment - general case
+  void INCHL(); // Increment - (HL) case
+  void DECR8(); // Decrement - general case
+  void DECHL(); // Decrement - (HL) case
+  void INC16();
+  void DEC16();
   
   void WRA(); // Write A into Memory
 
@@ -151,12 +161,15 @@ private:
 
 private:
   //Add the other members you create here
-  uint8_t* register_operands_map[8];
   uint8_t* pfx_register_ptr;
   uint8_t pfx_ins_family_index;
   uint8_t pfx_bit_index;
   uint8_t pfx_register_index;
   uint8_t pfx_rs_family_index;
+
+private:
+  uint8_t* register_operands_map[8];
+  uint16_t* u16_register_operands_map[4];
 };
 
 #endif

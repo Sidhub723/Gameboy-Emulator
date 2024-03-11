@@ -69,6 +69,20 @@ void CPU::LDZ2() {
   AF.hi = read8(0xFF00 + operand);
 }
 
+void CPU::LD_R16_u16() {
+  uint8_t index = (op>>4) & 0b11;
+  *u16_register_operands_map[index] = operand;
+}
+
+void CPU::LD_u16_SP() {
+  write16(read16(PC), SP);
+  PC+=2;
+}
+
+void CPU::LD_SP_HL() {
+  SP = HL.full;
+}
+
 // Arithmetic instructions
 
 void CPU::ADDA() {
@@ -105,6 +119,36 @@ void CPU::ORA() {
 
 void CPU::CPA() {
   
+}
+
+void CPU::INCR8() {
+  // Not meant for (HL) case
+  uint8_t index = (op>>3) & 0b111;
+  (*register_operands_map[index])++;
+}
+
+void CPU::INCHL() {
+  write8(HL.full, read8(HL.full)+1);
+}
+
+void CPU::DECR8() {
+  // Not meant for (HL) case
+  uint8_t index = (op>>3) & 0b111;
+  (*register_operands_map[index])--;
+}
+
+void CPU::DECHL() {
+  write8(HL.full, read8(HL.full)-1);
+}
+
+void CPU::INC16() {
+  uint8_t index = (op>>4) & 0b11;
+  *(u16_register_operands_map[index])++;
+}
+
+void CPU::DEC16() {
+  uint8_t index = (op>>4) & 0b11;
+  *(u16_register_operands_map[index])--;
 }
 
 void CPU::WRA() {
