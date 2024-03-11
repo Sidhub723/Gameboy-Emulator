@@ -193,3 +193,26 @@ void CPU::DEC16() {
 void CPU::WRA() {
   write8(operand_addr, AF.hi);
 }
+
+// REVIEW: The last line here might cause a bug
+void CPU::ADD_SP() {
+  set_flag(Flags::zero, 0);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, (SP & 0xF) + (operand & 0xF) > 0xF);
+  set_flag(Flags::carry, (SP & 0xFF) + (operand & 0xFF) > 0xFF);
+
+  // sign extension of operand : operand is 8 bit, but we want to add it to a 16 bit SP so we need to sign extend it.
+  SP += (int16_t)(int8_t)operand;
+}
+
+void CPU::POP() {
+  uint16_t val = read16(SP);
+  SP += 2;
+  *u16_push_pop_register_operands_map[(op>>4) & 0b11] = val;
+}
+
+void CPU::PUSH() {
+  uint16_t val = *u16_push_pop_register_operands_map[(op>>4) & 0b11];
+  SP -= 2;
+  write16(SP, val);
+}

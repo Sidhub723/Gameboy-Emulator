@@ -37,6 +37,12 @@ void CPU::initialize_register_maps() {
   u16_register_operands_map[0b01] = &(DE.full);
   u16_register_operands_map[0b10] = &(HL.full);
   u16_register_operands_map[0b11] = &(SP);
+
+  // populating the u16 push/pop register operands map
+  u16_push_pop_register_operands_map[0b00] = &(BC.full);
+  u16_push_pop_register_operands_map[0b01] = &(DE.full);
+  u16_push_pop_register_operands_map[0b10] = &(HL.full);
+  u16_push_pop_register_operands_map[0b11] = &(AF.full);
 }
 
 void CPU::initialize_ins_map(){
@@ -47,12 +53,26 @@ void CPU::initialize_ins_map(){
   instruction_map[0x21] = FuncDetails(&CPU::IMM16, &CPU::LDHL16, 3);
   instruction_map[0x31] = FuncDetails(&CPU::IMM16, &CPU::LDSP, 3);
   instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2);
+  instruction_map[0x36] = FuncDetails(&CPU::IMM8, &CPU::ADD_SP, 4);
 
   initialize_load_ins();
 
   initialize_arithmetic_ins();
+
+  initialize_push_pop_ins();
 }
 
+void CPU::initialize_push_pop_ins() {
+  // Initializing map for PUSH ins
+  for(uint8_t op_iter=0xC5; op_iter<=0xF5; op_iter+=0x10){
+    instruction_map[op_iter] = FuncDetails(&CPU::PUSH, &CPU::IMP, 4);
+  }
+
+  // Initializing map for POP ins
+  for(uint8_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10){
+    instruction_map[op_iter] = FuncDetails(&CPU::POP, &CPU::IMP, 3);
+  }
+}
 
 void CPU::initialize_load_ins() {
   // Initializing map for the 4 rows of LOAD ins
