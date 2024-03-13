@@ -17,10 +17,10 @@ union CPURegister {
 
 struct FuncDetails {
   FuncDetails() {}
-  FuncDetails(void (CPU::*addr_mode)(), void (CPU::*ins)(), uint8_t cycles)
-      : addr_mode(addr_mode), ins(ins), cycles(cycles) {}
-  void (CPU::*addr_mode)();
+  FuncDetails(void (CPU::*ins)(), void (CPU::*addr_mode)(), uint8_t cycles)
+      : ins(ins), addr_mode(addr_mode), cycles(cycles) {}
   void (CPU::*ins)();
+  void (CPU::*addr_mode)();
   uint8_t cycles;
 };
 
@@ -105,8 +105,6 @@ private:
 private:
 
   // Load instructions
-  void LDSP(); // Load INTO SP
-  void LDHL16(); // Load into Register HL
   void LDR8(); // Load into corresponding register from "operand"
   void LDIMM8(); // Load corresponding to the order in register_operands_map
   void LDHL8(); // Load into addr pointed by HL
@@ -127,9 +125,9 @@ private:
   void ADCA(); // add with carry
   void SUBA(); // subtract
   void SBCA(); // subtract with carry
-  void ANDA();
-  void XORA();
-  void ORA();
+  void ANDA(); // AND
+  void XORA(); // XOR
+  void ORA(); // OR
   void CPA(); // copy
   void INCR8(); // Increment - general case
   void INCHL(); // Increment - (HL) case

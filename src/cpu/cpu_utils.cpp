@@ -48,14 +48,21 @@ void CPU::initialize_register_maps() {
 
 void CPU::initialize_ins_map(){
   //PREFIX Map
-  instruction_map[0xcb] = FuncDetails(&CPU::IMP, &CPU::PFX, -1);
+  instruction_map[0xcb] = FuncDetails(&CPU::PFX, &CPU::IMP, -1);
+
+  /* Just a random note XD
+  Instruction 0x32: LD (HL-) A has been implemented in initialize_load_ins as:
+    -- instruction_map[0x32] = FuncDetails(&CPU::LDHLdec, &CPU::LDfromA, 2);
+
+  but could also have been implemented as:
+    -- instruction_map[0x32] = FuncDetails(&CPU::WRA, &CPU::HLD, 2);
+
+  So different implementation methods are possible. Maybe calls for some future optimizations!
+  */
+
 
   // setting up the instruction map
-  instruction_map[0x21] = FuncDetails(&CPU::IMM16, &CPU::LDHL16, 3);
-  instruction_map[0x31] = FuncDetails(&CPU::IMM16, &CPU::LDSP, 3);
-  instruction_map[0x32] = FuncDetails(&CPU::HLD, &CPU::WRA, 2);
-  instruction_map[0x36] = FuncDetails(&CPU::IMM8, &CPU::ADD_SP, 4);
-
+  
   initialize_load_ins();
 
   initialize_arithmetic_ins();
@@ -263,6 +270,9 @@ void CPU::initialize_arithmetic_ins(){
     instruction_map[0x1B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
     instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
     instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+
+    // Others
+    instruction_map[0xE8] = FuncDetails(&CPU::IMM8, &CPU::ADD_SP, 4);
 
   }
 

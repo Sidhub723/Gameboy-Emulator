@@ -6,14 +6,6 @@
 
 // Load instructions
 
-void CPU::LDSP() {
-  SP = operand;
-}
-
-void CPU::LDHL16() {
-  HL.full = operand;
-}
-
 void CPU::LDR8() {
   // Made for the 4 LOAD ins rows 
   uint8_t *tmp = register_operands_map[(op>>3) & 0b111];
