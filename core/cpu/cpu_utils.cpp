@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
-#include "core/interconnect/gb.h"
+// #include "core/interconnect/gb.h"
 #include "core/cpu/cpu.h"
 
 bool CPU::get_flag(uint8_t mask) {
@@ -15,9 +15,9 @@ void CPU::set_flag(uint8_t mask, bool flag_val) {
 
 void CPU::read_ins() {
   op = read8(PC++); 
-  if(PC == 0x0100){
-    gb->set_boot_mode(false);
-  }
+  // if(PC == 0x0100){
+  //   gb->set_boot_mode(false);
+  // }
 }
 
 void CPU::initialize_register_maps() {
@@ -285,4 +285,24 @@ void CPU::print_regs() {
   std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
   std::cout << "SP: 0x" << std::hex << SP << std::endl;
   std::cout << "PC: 0x" << std::hex << PC << std::endl << std::endl;
+}
+
+void CPU::set_state(CPUState state) {
+  AF.full = state.AF.full;
+  BC.full = state.BC.full;
+  DE.full = state.DE.full;
+  HL.full = state.HL.full;
+  SP = state.SP;
+  PC = state.PC;
+}
+
+CPUState CPU::get_state() {
+  CPUState state;
+  state.AF.full = AF.full;
+  state.BC.full = BC.full;
+  state.DE.full = DE.full;
+  state.HL.full = HL.full;
+  state.SP = SP;
+  state.PC = PC;
+  return state;
 }

@@ -24,6 +24,21 @@ struct FuncDetails {
   uint8_t cycles;
 };
 
+struct CPUState {
+  CPUState() {
+    PC = 0x0000;
+    SP = 0x0000;
+    AF.full = BC.full = DE.full = HL.full = 0x0000;
+  }
+
+  uint16_t PC;
+  uint16_t SP;
+  CPURegister AF;
+  CPURegister BC;
+  CPURegister DE;
+  CPURegister HL;
+};
+
 class CPU {
 public:
   CPU(GB *gb);
@@ -32,6 +47,9 @@ public:
   uint16_t read16(uint16_t addr);
   void write8(uint16_t addr, uint8_t data);
   void write16(uint16_t addr, uint16_t data);
+
+  void set_state(CPUState state);
+  CPUState get_state();
 
 //SECTION - Utility
 public:
