@@ -75,6 +75,31 @@ void CPU::initialize_ins_map(){
   initialize_jmp_ins();
 
   initialize_call_ins();
+
+  initialize_jmp_rel_ins();
+
+  initialize_misc_ins();
+
+  initialize_rot_ins();
+}
+
+void CPU::initialize_rot_ins() {
+  instruction_map[0x07] = FuncDetails(&CPU::RLCA, &CPU::IMP, 1);
+  instruction_map[0x17] = FuncDetails(&CPU::RLA, &CPU::IMP, 1);
+  instruction_map[0x0F] = FuncDetails(&CPU::RRCA, &CPU::IMP, 1);
+  instruction_map[0x1F] = FuncDetails(&CPU::RRA, &CPU::IMP, 1);
+}
+
+void CPU::initialize_misc_ins() {
+  instruction_map[0x00] = FuncDetails(&CPU::NOP, &CPU::IMP, 1);
+  instruction_map[0x10] = FuncDetails(&CPU::STOP, &CPU::IMP, 1);
+  instruction_map[0x76] = FuncDetails(&CPU::HALT, &CPU::IMP, 1);
+  instruction_map[0xF3] = FuncDetails(&CPU::DI, &CPU::IMP, 1);  
+  instruction_map[0xFB] = FuncDetails(&CPU::EI, &CPU::IMP, 1);
+  instruction_map[0x27] = FuncDetails(&CPU::DAA, &CPU::IMP, 1);
+  instruction_map[0x2F] = FuncDetails(&CPU::CPL, &CPU::IMP, 1);
+  instruction_map[0x3F] = FuncDetails(&CPU::CCF, &CPU::IMP, 1);
+  instruction_map[0x37] = FuncDetails(&CPU::SCF, &CPU::IMP, 1);
 }
 
 void CPU::initialize_call_ins() {
@@ -130,6 +155,17 @@ void CPU::initialize_push_pop_ins() {
   for(uint16_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10){
     instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::POP, &CPU::IMP, 3);
   }
+}
+
+void CPU::initialize_jmp_rel_ins(){
+  // Initializing map for JR ins
+  instruction_map[0x18] = FuncDetails(&CPU::JR, &CPU::IMM8, 3);
+
+  // Initializing map for JR conditional ins
+  instruction_map[0x20] = FuncDetails(&CPU::JR_NZ, &CPU::IMM8, (get_flag(Flags::zero) ? 2 : 3));
+  instruction_map[0x28] = FuncDetails(&CPU::JR_Z, &CPU::IMM8, (get_flag(Flags::zero) ? 3 : 2));
+  instruction_map[0x30] = FuncDetails(&CPU::JR_NC, &CPU::IMM8, (get_flag(Flags::carry) ? 2 : 3));
+  instruction_map[0x38] = FuncDetails(&CPU::JR_C, &CPU::IMM8, (get_flag(Flags::carry) ? 3 : 2));
 }
 
 void CPU::initialize_load_ins() {

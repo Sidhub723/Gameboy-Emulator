@@ -30,12 +30,14 @@ public:
   uint16_t cpu_read16(uint16_t addr);
   void cpu_write16(uint16_t addr, uint16_t data);
   void set_boot_mode(bool set_val) { boot_mode_enabled = set_val; }
+  void set_ime(bool set_val) {ime = set_val;}
   // void set_boot_mode(bool set_val) : boot_mode_enabled(set_val){} doesnt work
   // because its only for constructors
   void clock();
 
 private:
   bool boot_mode_enabled;
+  bool ime; //  interrupt master enable
 
   CPU *cpu;
   Boot *boot;

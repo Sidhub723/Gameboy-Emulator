@@ -63,6 +63,9 @@ public:
   void initialize_rst_ins();
   void initialize_jmp_ins();
   void initialize_call_ins(); 
+  void initialize_jmp_rel_ins();
+  void initialize_misc_ins();
+  void initialize_rot_ins();
 
 private:
   void read_ins();
@@ -160,6 +163,7 @@ private:
   void POP(); // Pop from stack
   void PUSH(); // Push into stack
 
+  // Return
   void RET(); // Return
   void RETI(); // Return from interrupt
   void RET_NZ(); // Return if not zero
@@ -169,6 +173,7 @@ private:
 
   void RST(); // Restart
 
+  // Jump
   void JMP(); // Jump
   void JMP_HL(); // Jump to HL
   void JMP_NZ(); // Jump if not zero
@@ -176,12 +181,36 @@ private:
   void JMP_NC(); // Jump if not carry
   void JMP_C(); // Jump if carry
 
+  // Call
   void CALL(); // Call
   void CALL_NZ(); // Call if not zero
   void CALL_Z(); // Call if zero
   void CALL_NC(); // Call if not carry
   void CALL_C(); // Call if carry
 
+  // Jump Relative
+  void JR(); // Unoconditional Jump
+  void JR_Z(); // Jump if zero
+  void JR_NZ(); // Jump if not zero
+  void JR_C(); // Jump if carry
+  void JR_NC(); // Jump if not carry
+
+  // Misc Instructions
+  void NOP(); // No Operation
+  void HALT(); // Halt
+  void STOP(); // Stop
+  void DI(); // Disable Interrupts
+  void EI(); // Enable Interrupts
+  void DAA(); // Decimal Adjust Accumulator
+  void CPL(); // Complement Accumulator
+  void SCF(); // Set Carry Flag
+  void CCF(); // Complement Carry Flag
+
+  // Rotate Instructions
+  void RLCA();
+  void RLA();
+  void RRCA();
+  void RRA();
 //!SECTION
 
 private:
