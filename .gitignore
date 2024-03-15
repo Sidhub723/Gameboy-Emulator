@@ -1,4 +1,5 @@
 out
 a.out
-.vscode
 Makefile
+boot_rom
+build

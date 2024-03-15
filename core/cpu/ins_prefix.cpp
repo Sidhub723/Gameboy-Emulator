@@ -1,8 +1,6 @@
-#include "../../include/CPU.h"
-
-
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+#include "core/cpu/cpu.h"
 
 //SECTION - PREFIX INSTRUCTIONS
 

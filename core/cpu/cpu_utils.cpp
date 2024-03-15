@@ -1,9 +1,8 @@
-#include "../../include/GB.h"
-#include "../../include/CPU.h"
-
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+#include "core/interconnect/gb.h"
+#include "core/cpu/cpu.h"
 
 bool CPU::get_flag(uint8_t mask) {
   return AF.lo & ~mask;
@@ -142,7 +141,7 @@ void CPU::initialize_load_ins() {
       // (HL) case LHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
     }
-    else if(op_iter & 0b111 == 0b110){
+    else if((op_iter & 0b111) == 0b110){
       // (HL) case RHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
     }
