@@ -11,7 +11,7 @@ void operation_check(CPU* test_cpu)
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<uint8_t> dis(0x00, 0xff);
+    std::uniform_int_distribution<uint16_t> dis(0x00, 0xff);
 
     //testing XOR for 20 random values
     for(uint8_t i = 0; i < num_tests; i++)
@@ -242,7 +242,7 @@ void flag_check(CPU* test_cpu)
     std::cout << "XORA Flag: Success" << std::endl;
 }
 
-int xora(int argc, char** argv)
+int xora(int argc, char** const argv)
 {
     CPU* test_cpu = new CPU(nullptr);
     std::cout << "Testing XORA..." << std::endl;

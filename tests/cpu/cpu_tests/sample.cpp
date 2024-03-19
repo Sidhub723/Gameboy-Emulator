@@ -13,7 +13,7 @@ void cpu_sanity_check(CPU test_cpu)
     std::cout << "Success" << std::endl;
 }
 
-int sample(int argc, char** argv)
+int sample(int argc, char** const argv)
 {
     CPU test_cpu(nullptr);
 
