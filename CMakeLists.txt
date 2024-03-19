@@ -16,6 +16,10 @@ target_compile_options(compile_options INTERFACE
     "$<${msvc_like_cxx}:$<BUILD_INTERFACE:>>"
 )
 
+target_compile_definitions(compile_options INTERFACE
+    "$<${msvc_like_cxx}:IS_WINDOWS>"
+)
+
 add_subdirectory(core)
 add_subdirectory(tests)
 add_executable(GBEmu main.cpp)

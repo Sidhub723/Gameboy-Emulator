@@ -40,7 +40,11 @@ public:
 
 private:
     std::vector<uint8_t> memory;
-    inline static CPUTestAddressSpace* instance;
+    #ifdef IS_WINDOWS
+        static CPUTestAddressSpace* instance;
+    #else
+        inline static CPUTestAddressSpace* instance;
+    #endif
 
 private:
     CPUTestAddressSpace()
