@@ -306,9 +306,18 @@ void CPU::initialize_arithmetic_ins(){
     instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
     instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
 
-    // Others
-    instruction_map[0xE8] = FuncDetails(&CPU::IMM8, &CPU::ADD_SP, 4);
+    // Bottom x6 and xE column
+    instruction_map[0xC6] = FuncDetails(&CPU::ADDA, &CPU::IMM8, 2);
+    instruction_map[0xCE] = FuncDetails(&CPU::ADCA, &CPU::IMM8, 2);
+    instruction_map[0xD6] = FuncDetails(&CPU::SUBA, &CPU::IMM8, 2);
+    instruction_map[0xDE] = FuncDetails(&CPU::SBCA, &CPU::IMM8, 2);
+    instruction_map[0xE6] = FuncDetails(&CPU::ANDA, &CPU::IMM8, 2);
+    instruction_map[0xEE] = FuncDetails(&CPU::XORA, &CPU::IMM8, 2);
+    instruction_map[0xF6] = FuncDetails(&CPU::ORA, &CPU::IMM8, 2);
+    instruction_map[0xFE] = FuncDetails(&CPU::CPA, &CPU::IMM8, 2);
 
+    // Others
+    instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
   }
 
 }
