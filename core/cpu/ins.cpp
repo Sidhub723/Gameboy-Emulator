@@ -381,14 +381,6 @@ void CPU::STOP() {
   throw std::runtime_error(ss.str());
 }
 
-void CPU::DI() {
-  gb->set_ime(false);
-}
-
-void CPU::EI() {
-  gb->set_ime(true);
-}
-
 void CPU::DAA() {
   uint8_t bcd_a = AF.hi;
   uint8_t correction = 0;

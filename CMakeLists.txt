@@ -13,7 +13,7 @@ set(msvc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 
 target_compile_options(compile_options INTERFACE
     "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;>>"
-    "$<${msvc_like_cxx}:$<BUILD_INTERFACE:-W3;-WX>>"
+    "$<${msvc_like_cxx}:$<BUILD_INTERFACE:>>"
 )
 
 add_subdirectory(core)
