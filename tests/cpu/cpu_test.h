@@ -40,7 +40,7 @@ public:
 
 private:
     std::vector<uint8_t> memory;
-    static CPUTestAddressSpace* instance;
+    inline static CPUTestAddressSpace* instance;
 
 private:
     CPUTestAddressSpace()

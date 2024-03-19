@@ -46,7 +46,7 @@ private:
     std::vector<RWLogEntry> log;
     uint32_t readCount;
     uint32_t writeCount;
-    static RWLog* instance;
+    inline static RWLog* instance;
 };
 
 #endif

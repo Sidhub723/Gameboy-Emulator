@@ -6,3 +6,6 @@ uint16_t CPU::read16(uint16_t addr) { return CPUTestAddressSpace::get_instance()
 
 void CPU::write8(uint16_t addr, uint8_t data) { CPUTestAddressSpace::get_instance()->set8(addr, data);}
 void CPU::write16(uint16_t addr, uint16_t data) { CPUTestAddressSpace::get_instance()->set16(addr, data);}
+
+void CPU::DI() {}
+void CPU::EI() {}

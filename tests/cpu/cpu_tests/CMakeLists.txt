@@ -1,6 +1,18 @@
 set(failRegex "[.]*Failure([.]*)")
 
-add_executable(cpu_sanity_check template_test.cpp)
-target_link_libraries(cpu_sanity_check PRIVATE GBEmuCPUTest test_config)
-add_test(NAME cpu_sanity_check COMMAND cpu_sanity_check)
-set_property(TEST cpu_sanity_check PROPERTY FAIL_REGULAR_EXPRESSION "${failRegex}")
+create_test_sourcelist(CPUTests GBEmuCPU_Tests.cpp
+    sample.cpp
+    xora.cpp
+)
+
+add_executable(GBEmuCPU_Tests ${CPUTests})
+target_link_libraries(GBEmuCPU_Tests PRIVATE GBEmuCPUTest test_config)
+
+set(TestsToRun ${CPUTests})
+remove(TestsToRun GBEmuCPU_Tests.cpp)
+
+foreach(test ${TestsToRun})
+    get_filename_component(TName ${test} NAME_WE)
+    add_test(NAME ${TName} COMMAND GBEmuCPU_Tests ${TName} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    set_property(TEST ${TName} PROPERTY FAIL_REGULAR_EXPRESSION ${failRegex})
+endforeach()
