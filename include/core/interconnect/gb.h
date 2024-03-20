@@ -6,10 +6,14 @@
 
 #define BOOT_RANGE 0x0000, 0x0100
 #define VRAM_RANGE 0x8000, 0xA000
+#define IO_RANGE 0xFF00, 0xFF7F
+#define ROM_RANGE 0x0000, 0x8000
 
 class CPU;
 class Boot;
 class VRAM;
+class IO;
+class ROM;
 
 struct Range
 {
@@ -23,7 +27,7 @@ struct Range
 
 class GB {
 public:
-  GB(std::string boot_file_path);
+  GB(std::string boot_file_path, std::string cartridge_file_path);
   ~GB();
   uint8_t cpu_read8(uint16_t addr);
   void cpu_write8(uint16_t addr, uint8_t data);
@@ -40,10 +44,14 @@ private:
   CPU *cpu;
   Boot *boot;
   VRAM *vram;
+  IO *io;
+  ROM *rom;
 
 private:
   Range boot_range = Range(BOOT_RANGE);
   Range vram_range = Range(VRAM_RANGE);
+  Range io_range = Range(IO_RANGE);
+  Range rom_range = Range(ROM_RANGE);
 };
 
 #endif
