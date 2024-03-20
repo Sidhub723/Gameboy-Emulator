@@ -66,6 +66,7 @@ public:
   void initialize_jmp_rel_ins();
   void initialize_misc_ins();
   void initialize_rot_ins();
+  bool get_ime() {return ime;}
 
 private:
   void read_ins();
@@ -231,6 +232,7 @@ private:
 
 private:
   uint8_t cycles;
+  bool ime;
 
 private:
   GB *gb;
