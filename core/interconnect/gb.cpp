@@ -9,6 +9,7 @@ GB::GB(std::string boot_file_path) {
   boot_mode_enabled = true;
   boot = new Boot(boot_file_path);
   cpu = new CPU(this);
+  vram = new VRAM();
 }
 GB::~GB() {
   delete cpu;
