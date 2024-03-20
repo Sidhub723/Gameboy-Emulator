@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
-
-#include "../include/Boot.h"
+#include "core/boot/boot.h"
 
 Boot::Boot(std::string file_path) {
   std::ifstream file(file_path, std::ios::binary);

@@ -1,8 +1,6 @@
-#include "../../include/CPU.h"
-
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
-
+#include "core/cpu/cpu.h"
 
 // Load instructions
 
@@ -330,3 +328,137 @@ void CPU::CALL_C() {
   }
 }
 
+// SECTION: Jump Relative
+
+void CPU::JR() {
+  PC += (int8_t)operand;
+}
+
+void CPU::JR_Z() {
+  if(get_flag(Flags::zero)) {
+    PC += (int8_t)operand;
+  }
+}
+
+void CPU::JR_NZ() {
+  if(!get_flag(Flags::zero)) {
+    PC += (int8_t)operand;
+  }
+}
+
+void CPU::JR_C() {
+  if(get_flag(Flags::carry)) {
+    PC += (int8_t)operand;
+  }
+}
+
+void CPU::JR_NC() {
+  if(!get_flag(Flags::carry)) {
+    PC += (int8_t)operand;
+  }
+}
+
+//!SECTION
+
+// SECTION: Misc Instructions
+
+void CPU::NOP() {
+}
+
+void CPU::HALT() {
+  // if(gb->ime) {
+  //   ISR
+  // }
+  // do nothing
+  std::stringstream ss;
+  ss << "HALT is being called, but it is not implemented yet";
+  throw std::runtime_error(ss.str());
+}
+
+void CPU::STOP() {
+  std::stringstream ss;
+  ss << "STOP is being called, but it is not implemented yet";
+  throw std::runtime_error(ss.str());
+}
+
+void CPU::DAA() {
+  uint8_t bcd_a = AF.hi;
+  uint8_t correction = 0;
+  if(get_flag(Flags::half_carry) || (!get_flag(Flags::neg) && (bcd_a & 0xF) > 9)) {
+    correction += 0x06;
+  }
+  if(get_flag(Flags::carry) || (!get_flag(Flags::neg) && bcd_a > 0x99)) {
+    correction += 0x60;
+    set_flag(Flags::carry, 1);
+  }
+
+  if(get_flag(Flags::neg)) {
+    bcd_a -= correction;
+  }
+  else {
+    bcd_a += correction;
+  }
+
+  set_flag(Flags::zero, bcd_a == 0);
+  set_flag(Flags::half_carry, 0);
+  AF.hi = bcd_a;
+}
+
+void CPU::CPL() {
+  AF.hi = ~AF.hi;
+  set_flag(Flags::neg, 1);
+  set_flag(Flags::half_carry, 1);
+}
+
+void CPU::SCF() {
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, 1);
+}
+
+void CPU::CCF() {
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, !get_flag(Flags::carry));
+}
+
+//!SECTION
+
+//SECTION - Rotate Instruction
+void CPU::RLCA() {
+  uint8_t carry = (AF.hi & 0x80) >> 7;
+  AF.hi = (AF.hi << 1) | carry;
+  set_flag(Flags::zero, 0);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, carry);
+}
+
+void CPU::RLA() {
+  uint8_t carry = (AF.hi & 0x80) >> 7;
+  AF.hi = (AF.hi << 1) | get_flag(Flags::carry);
+  set_flag(Flags::zero, 0);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, carry);
+}
+
+void CPU::RRCA() {
+  uint8_t carry = AF.hi & 0x01;
+  AF.hi = (AF.hi >> 1) | (carry << 7);
+  set_flag(Flags::zero, 0);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, carry);
+}
+
+void CPU::RRA() {
+  uint8_t carry = AF.hi & 0x01;
+  AF.hi = (AF.hi >> 1) | (get_flag(Flags::carry) << 7);
+  set_flag(Flags::zero, 0);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+  set_flag(Flags::carry, carry);
+}
+
+//!SECTION

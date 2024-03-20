@@ -1,8 +1,8 @@
-#include "../../include/CPU.h"
-#include "../../include/GB.h"
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+// #include "core/interconnect/gb.h"
+#include "core/cpu/cpu.h"
 
 CPU::CPU(GB *gb) : gb(gb) {
 

@@ -1,9 +1,9 @@
-#include "../include/GB.h"
-#include "../include/Boot.h"
-#include "../include/CPU.h"
-#include "../include/memory/VRAM.h"
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+#include "core/interconnect/gb.h"
+#include "core/boot/boot.h"
+#include "core/cpu/cpu.h"
+#include "core/memory/vram.h"
 
 GB::GB(std::string boot_file_path) {
   boot_mode_enabled = true;

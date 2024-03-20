@@ -1,7 +1,6 @@
-#include "../../include/memory/VRAM.h"
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
-
+#include <core/memory/vram.h>
 
 
 uint8_t VRAM::read8(uint16_t addr) {

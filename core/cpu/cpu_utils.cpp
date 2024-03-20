@@ -1,9 +1,8 @@
-#include "../../include/GB.h"
-#include "../../include/CPU.h"
-
 #include <iostream>
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
+// #include "core/interconnect/gb.h"
+#include "core/cpu/cpu.h"
 
 bool CPU::get_flag(uint8_t mask) {
   return AF.lo & ~mask;
@@ -16,9 +15,9 @@ void CPU::set_flag(uint8_t mask, bool flag_val) {
 
 void CPU::read_ins() {
   op = read8(PC++); 
-  if(PC == 0x0100){
-    gb->set_boot_mode(false);
-  }
+  // if(PC == 0x0100){
+  //   gb->set_boot_mode(false);
+  // }
 }
 
 void CPU::initialize_register_maps() {
@@ -76,6 +75,31 @@ void CPU::initialize_ins_map(){
   initialize_jmp_ins();
 
   initialize_call_ins();
+
+  initialize_jmp_rel_ins();
+
+  initialize_misc_ins();
+
+  initialize_rot_ins();
+}
+
+void CPU::initialize_rot_ins() {
+  instruction_map[0x07] = FuncDetails(&CPU::RLCA, &CPU::IMP, 1);
+  instruction_map[0x17] = FuncDetails(&CPU::RLA, &CPU::IMP, 1);
+  instruction_map[0x0F] = FuncDetails(&CPU::RRCA, &CPU::IMP, 1);
+  instruction_map[0x1F] = FuncDetails(&CPU::RRA, &CPU::IMP, 1);
+}
+
+void CPU::initialize_misc_ins() {
+  instruction_map[0x00] = FuncDetails(&CPU::NOP, &CPU::IMP, 1);
+  instruction_map[0x10] = FuncDetails(&CPU::STOP, &CPU::IMP, 1);
+  instruction_map[0x76] = FuncDetails(&CPU::HALT, &CPU::IMP, 1);
+  instruction_map[0xF3] = FuncDetails(&CPU::DI, &CPU::IMP, 1);  
+  instruction_map[0xFB] = FuncDetails(&CPU::EI, &CPU::IMP, 1);
+  instruction_map[0x27] = FuncDetails(&CPU::DAA, &CPU::IMP, 1);
+  instruction_map[0x2F] = FuncDetails(&CPU::CPL, &CPU::IMP, 1);
+  instruction_map[0x3F] = FuncDetails(&CPU::CCF, &CPU::IMP, 1);
+  instruction_map[0x37] = FuncDetails(&CPU::SCF, &CPU::IMP, 1);
 }
 
 void CPU::initialize_call_ins() {
@@ -133,6 +157,17 @@ void CPU::initialize_push_pop_ins() {
   }
 }
 
+void CPU::initialize_jmp_rel_ins(){
+  // Initializing map for JR ins
+  instruction_map[0x18] = FuncDetails(&CPU::JR, &CPU::IMM8, 3);
+
+  // Initializing map for JR conditional ins
+  instruction_map[0x20] = FuncDetails(&CPU::JR_NZ, &CPU::IMM8, (get_flag(Flags::zero) ? 2 : 3));
+  instruction_map[0x28] = FuncDetails(&CPU::JR_Z, &CPU::IMM8, (get_flag(Flags::zero) ? 3 : 2));
+  instruction_map[0x30] = FuncDetails(&CPU::JR_NC, &CPU::IMM8, (get_flag(Flags::carry) ? 2 : 3));
+  instruction_map[0x38] = FuncDetails(&CPU::JR_C, &CPU::IMM8, (get_flag(Flags::carry) ? 3 : 2));
+}
+
 void CPU::initialize_load_ins() {
   // Initializing map for the 4 rows of LOAD ins
   for(uint16_t op_iter=0x40; op_iter<0x80; op_iter++){
@@ -142,7 +177,7 @@ void CPU::initialize_load_ins() {
       // (HL) case LHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
     }
-    else if(op_iter & 0b111 == 0b110){
+    else if((op_iter & 0b111) == 0b110){
       // (HL) case RHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
     }
@@ -271,9 +306,18 @@ void CPU::initialize_arithmetic_ins(){
     instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
     instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
 
-    // Others
-    instruction_map[0xE8] = FuncDetails(&CPU::IMM8, &CPU::ADD_SP, 4);
+    // Bottom x6 and xE column
+    instruction_map[0xC6] = FuncDetails(&CPU::ADDA, &CPU::IMM8, 2);
+    instruction_map[0xCE] = FuncDetails(&CPU::ADCA, &CPU::IMM8, 2);
+    instruction_map[0xD6] = FuncDetails(&CPU::SUBA, &CPU::IMM8, 2);
+    instruction_map[0xDE] = FuncDetails(&CPU::SBCA, &CPU::IMM8, 2);
+    instruction_map[0xE6] = FuncDetails(&CPU::ANDA, &CPU::IMM8, 2);
+    instruction_map[0xEE] = FuncDetails(&CPU::XORA, &CPU::IMM8, 2);
+    instruction_map[0xF6] = FuncDetails(&CPU::ORA, &CPU::IMM8, 2);
+    instruction_map[0xFE] = FuncDetails(&CPU::CPA, &CPU::IMM8, 2);
 
+    // Others
+    instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
   }
 
 }
@@ -286,4 +330,24 @@ void CPU::print_regs() {
   std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
   std::cout << "SP: 0x" << std::hex << SP << std::endl;
   std::cout << "PC: 0x" << std::hex << PC << std::endl << std::endl;
+}
+
+void CPU::set_state(CPUState state) {
+  AF.full = state.AF.full;
+  BC.full = state.BC.full;
+  DE.full = state.DE.full;
+  HL.full = state.HL.full;
+  SP = state.SP;
+  PC = state.PC;
+}
+
+CPUState CPU::get_state() {
+  CPUState state;
+  state.AF.full = AF.full;
+  state.BC.full = BC.full;
+  state.DE.full = DE.full;
+  state.HL.full = HL.full;
+  state.SP = SP;
+  state.PC = PC;
+  return state;
 }
