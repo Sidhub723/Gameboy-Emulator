@@ -13,3 +13,5 @@ void CPU::write16(uint16_t addr, uint16_t data) { CPUTestAddressSpace::get_insta
 
 void CPU::DI() {}
 void CPU::EI() {}
+
+void CPU::HALT() {}

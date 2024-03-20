@@ -67,6 +67,7 @@ public:
   void initialize_misc_ins();
   void initialize_rot_ins();
   bool get_ime() {return ime;}
+  void call_interrupt(uint16_t addr);
 
 private:
   void read_ins();
@@ -233,6 +234,7 @@ private:
 private:
   uint8_t cycles;
   bool ime;
+  bool halt_bug;
 
 private:
   GB *gb;
