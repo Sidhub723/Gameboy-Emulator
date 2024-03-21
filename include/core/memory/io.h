@@ -1,23 +1,23 @@
-#ifndef VRAM_H
-#define VRAM_H
+#ifndef IO_H
+#define IO_H
 
 #include <stdint.h>
 #include <string>
 
-class VRAM;
+class IO;
 
 
-class VRAM {
+class IO {
 public:
-  VRAM() {};
-  ~VRAM() {};
+  IO() {};
+  ~IO() {};
   uint8_t read8(uint16_t addr);
   void write8(uint16_t addr, uint8_t data);
   uint16_t read16(uint16_t addr);
   void write16(uint16_t addr, uint16_t data);
 
 private:
-  uint8_t vram[0x2000] = {0xcd};
+  uint8_t io[0x80] = {0x00};
 };
 
 #endif

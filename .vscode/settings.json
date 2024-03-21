@@ -74,6 +74,6 @@
     },
     "cmake.buildTask": false,
     "cmake.debugConfig": {
-        "args": ["${workspaceFolder}/boot_rom/dmg_boot.bin"]
+        "args": ["${workspaceFolder}/boot_rom/dmg_boot.bin", "${workspaceFolder}/cartridges/tetris.gb"]
     }
 }
