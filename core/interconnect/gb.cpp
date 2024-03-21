@@ -23,6 +23,12 @@ uint8_t GB::cpu_read8(uint16_t addr) {
   if (boot_mode_enabled && boot_range.in_range(addr)) {
     return boot->read8(boot_range.offset_of(addr));
   }
+  else if(ie_range.in_range(addr)){
+    return ie.reg;
+  }
+  else if(if_range.in_range(addr)){
+    return iflag.reg;
+  }
   else if (vram_range.in_range(addr)) {
     return vram->read8(vram_range.offset_of(addr));
   }
@@ -61,6 +67,14 @@ uint16_t GB::cpu_read16(uint16_t addr) {
 void GB::cpu_write8(uint16_t addr, uint8_t data) {
   if(vram_range.in_range(addr)){
     vram->write8(vram_range.offset_of(addr), data);
+    return;
+  }
+  else if(ie_range.in_range(addr)){
+    ie.reg = data;
+    return;
+  }
+  else if(if_range.in_range(addr)){
+    iflag.reg = data;
     return;
   }
   

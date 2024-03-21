@@ -20,6 +20,13 @@ void CPU::read_ins() {
   // }
 }
 
+void CPU::call_interrupt(uint16_t addr) {
+  ime = false;
+  write16(--SP, PC);
+  PC = addr;
+  cycles = 5;
+}
+
 void CPU::initialize_register_maps() {
   // populating the register operands map
   register_operands_map[0b000] = &(BC.hi);

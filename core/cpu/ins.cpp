@@ -365,16 +365,6 @@ void CPU::JR_NC() {
 void CPU::NOP() {
 }
 
-void CPU::HALT() {
-  // if(gb->ime) {
-  //   ISR
-  // }
-  // do nothing
-  std::stringstream ss;
-  ss << "HALT is being called, but it is not implemented yet";
-  throw std::runtime_error(ss.str());
-}
-
 void CPU::STOP() {
   std::stringstream ss;
   ss << "STOP is being called, but it is not implemented yet";

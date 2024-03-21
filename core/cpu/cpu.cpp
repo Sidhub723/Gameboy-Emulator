@@ -24,6 +24,10 @@ void CPU::clock() {
     //print_regs();
     read_ins();
     // print_regs();
+    if(halt_bug) {
+      PC--;
+      halt_bug = false;
+    }
 
     // decode
     if (instruction_map.find(op) == instruction_map.end()) {
