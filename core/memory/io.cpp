@@ -1,6 +1,6 @@
 #include <sstream>   //to format error output nicely
 #include <stdexcept> //for throwing runtime errors
-#include <core\memory\io.h>
+#include <core/memory/io.h>
 
 
 uint8_t IO::read8(uint16_t addr) {
