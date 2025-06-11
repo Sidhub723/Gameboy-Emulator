@@ -1,7 +1,6 @@
 #include <iostream>
-#include <sstream>   //to format error output nicely
-#include <stdexcept> //for throwing runtime errors
-// #include "core/interconnect/gb.h"
+#include <sstream>
+#include <stdexcept>
 #include "core/cpu/cpu.h"
 
 bool CPU::get_flag(uint8_t mask) {
@@ -35,7 +34,7 @@ void CPU::initialize_register_maps() {
   register_operands_map[0b011] = &(DE.lo);
   register_operands_map[0b100] = &(HL.hi);
   register_operands_map[0b101] = &(HL.lo);
-  register_operands_map[0b110] = nullptr; //This is the (HL) pointer case
+  register_operands_map[0b110] = nullptr; // This is the (HL) pointer case
   register_operands_map[0b111] = &(AF.hi);
 
   // populating the u16 register operands map
@@ -49,11 +48,10 @@ void CPU::initialize_register_maps() {
   u16_push_pop_register_operands_map[0b01] = &(DE.full);
   u16_push_pop_register_operands_map[0b10] = &(HL.full);
   u16_push_pop_register_operands_map[0b11] = &(AF.full);
-
 }
 
-void CPU::initialize_ins_map(){
-  //PREFIX Map
+void CPU::initialize_ins_map() {
+  // PREFIX Map
   instruction_map[0xcb] = FuncDetails(&CPU::PFX, &CPU::IMP, -1);
 
   /* Just a random note XD
@@ -66,9 +64,8 @@ void CPU::initialize_ins_map(){
   So different implementation methods are possible. Maybe calls for some future optimizations!
   */
 
-
   // setting up the instruction map
-  
+
   initialize_load_ins();
 
   initialize_arithmetic_ins();
@@ -101,7 +98,7 @@ void CPU::initialize_misc_ins() {
   instruction_map[0x00] = FuncDetails(&CPU::NOP, &CPU::IMP, 1);
   instruction_map[0x10] = FuncDetails(&CPU::STOP, &CPU::IMP, 1);
   instruction_map[0x76] = FuncDetails(&CPU::HALT, &CPU::IMP, 1);
-  instruction_map[0xF3] = FuncDetails(&CPU::DI, &CPU::IMP, 1);  
+  instruction_map[0xF3] = FuncDetails(&CPU::DI, &CPU::IMP, 1);
   instruction_map[0xFB] = FuncDetails(&CPU::EI, &CPU::IMP, 1);
   instruction_map[0x27] = FuncDetails(&CPU::DAA, &CPU::IMP, 1);
   instruction_map[0x2F] = FuncDetails(&CPU::CPL, &CPU::IMP, 1);
@@ -123,7 +120,7 @@ void CPU::initialize_call_ins() {
 // REVIEW : The RESET and RETURN instructions need to be verified
 void CPU::initialize_rst_ins() {
   // Initializing map for RST ins
-  for(uint16_t op_iter=0xC7; op_iter<=0xFF; op_iter+=0x8){
+  for(uint16_t op_iter=0xC7; op_iter<=0xFF; op_iter+=0x8) {
     instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::RST, &CPU::IMP, 4);
   }
 }
@@ -154,17 +151,17 @@ void CPU::initialize_jmp_ins() {
 // NOTE: THE FOR LOOPS NEED UINT16_T TO AVOID OVERFLOW
 void CPU::initialize_push_pop_ins() {
   // Initializing map for PUSH ins
-  for(uint16_t op_iter=0xC5; op_iter<=0xF5; op_iter+=0x10){
+  for(uint16_t op_iter=0xC5; op_iter<=0xF5; op_iter+=0x10) {
     instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::PUSH, &CPU::IMP, 4);
   }
 
   // Initializing map for POP ins
-  for(uint16_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10){
+  for(uint16_t op_iter=0xC1; op_iter<=0xF1; op_iter+=0x10) {
     instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::POP, &CPU::IMP, 3);
   }
 }
 
-void CPU::initialize_jmp_rel_ins(){
+void CPU::initialize_jmp_rel_ins() {
   // Initializing map for JR ins
   instruction_map[0x18] = FuncDetails(&CPU::JR, &CPU::IMM8, 3);
 
@@ -177,14 +174,14 @@ void CPU::initialize_jmp_rel_ins(){
 
 void CPU::initialize_load_ins() {
   // Initializing map for the 4 rows of LOAD ins
-  for(uint16_t op_iter=0x40; op_iter<0x80; op_iter++){
-    if(op_iter == 0x76) continue; // HALT ins
+  for (uint16_t op_iter = 0x40; op_iter < 0x80; op_iter++) {
+    if (op_iter == 0x76) continue; // HALT ins
 
-    if(op_iter>=0x70 && op_iter<0x80){
+    if (op_iter>=0x70 && op_iter<0x80) {
       // (HL) case LHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
     }
-    else if((op_iter & 0b111) == 0b110){
+    else if ((op_iter & 0b111) == 0b110) {
       // (HL) case RHS
       instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
     }
@@ -194,7 +191,7 @@ void CPU::initialize_load_ins() {
   }
 
   // Initializing map for +6 & +E LD ins
-  for(uint8_t op_iter=0x06; op_iter<=0x3E; op_iter+=0x8){
+  for(uint8_t op_iter=0x06; op_iter<=0x3E; op_iter+=0x8) {
     uint8_t cyc;
     if((op_iter>>3) == 0b110) cyc=3; // (HL) case
     else cyc=2;
@@ -215,12 +212,12 @@ void CPU::initialize_load_ins() {
   // others
   instruction_map[0xEA] = FuncDetails(&CPU::LDU16addr, &CPU::LDfromA, 4);
   instruction_map[0xFA] = FuncDetails(&CPU::LDA, &CPU::LDfromU16addr, 4);
-  
+
   instruction_map[0xE0] = FuncDetails(&CPU::LDZ1, &CPU::IMM8, 3);
   instruction_map[0xE2] = FuncDetails(&CPU::LDZ1, &CPU::LDfromC, 2);
   instruction_map[0xF0] = FuncDetails(&CPU::LDZ2, &CPU::IMM8, 3);
   instruction_map[0xF2] = FuncDetails(&CPU::LDZ2, &CPU::LDfromC, 2);
-  
+
   instruction_map[0x01] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
   instruction_map[0x11] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
   instruction_map[0x21] = FuncDetails(&CPU::LD_R16_u16, &CPU::IMM16, 3);
@@ -228,14 +225,13 @@ void CPU::initialize_load_ins() {
 
   instruction_map[0x08] = FuncDetails(&CPU::LD_u16_SP, &CPU::IMP, 5);
   instruction_map[0xF9] = FuncDetails(&CPU::LD_SP_HL, &CPU::IMP, 2);
-
 }
 
-void CPU::initialize_arithmetic_ins(){
+void CPU::initialize_arithmetic_ins() {
   // Initializing map for the 4 rows of Arithmetic ins
   for(uint8_t op_iter=0x80; op_iter<0xC0; op_iter++){
     uint8_t register_index = op_iter & 0b111;
-    switch ((op_iter>>3) & 0b111) { // operation type
+    switch ((op_iter >> 3) & 0b111) { // operation type
       case 0b000:
         // ADD
         if(register_index == 0b110) instruction_map[op_iter] = FuncDetails(&CPU::ADDA, &CPU::LDfromHL8, 2);
@@ -287,15 +283,15 @@ void CPU::initialize_arithmetic_ins(){
 
     // Initializing INC/DEC ins
     // INC
-    for(uint8_t op_iter=0x04; op_iter<=0x3C; op_iter+=0x8){
-      if(op_iter>>3 == 0b110)
+    for (uint8_t op_iter = 0x04; op_iter <= 0x3C; op_iter += 0x8) {
+      if (op_iter >> 3 == 0b110)
         instruction_map[op_iter] = FuncDetails(&CPU::INCHL, &CPU::IMP, 3); // (HL) case
       else
         instruction_map[op_iter] = FuncDetails(&CPU::INCR8, &CPU::IMP, 1);
     }
     // DEC
-    for(uint8_t op_iter=0x05; op_iter<=0x3D; op_iter+=0x8){
-      if(op_iter>>3 == 0b110)
+    for (uint8_t op_iter = 0x05; op_iter <= 0x3D; op_iter += 0x8) {
+      if (op_iter >> 3 == 0b110)
         instruction_map[op_iter] = FuncDetails(&CPU::DECHL, &CPU::IMP, 3); // (HL) case
       else
         instruction_map[op_iter] = FuncDetails(&CPU::DECR8, &CPU::IMP, 1);
@@ -326,7 +322,6 @@ void CPU::initialize_arithmetic_ins(){
     // Others
     instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
   }
-
 }
 
 void CPU::print_regs() {
@@ -336,7 +331,8 @@ void CPU::print_regs() {
   std::cout << "DE: 0x" << std::hex << DE.full << std::endl;
   std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
   std::cout << "SP: 0x" << std::hex << SP << std::endl;
-  std::cout << "PC: 0x" << std::hex << PC << std::endl << std::endl;
+  std::cout << "PC: 0x" << std::hex << PC << std::endl;
+  std::cout << std::endl;
 }
 
 void CPU::set_state(CPUState state) {

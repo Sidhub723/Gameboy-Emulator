@@ -13,8 +13,8 @@ Boot::Boot(std::string file_path) {
     throw std::runtime_error("Boot ROM file is not 256 bytes");
   }
 
-  file.seekg(0, std::ios::beg);
   // Read 256 bytes of the file into boot_rom
+  file.seekg(0, std::ios::beg);
   for (int i = 0; i < 256; i++) {
     boot_rom[i] = file.get();
   }

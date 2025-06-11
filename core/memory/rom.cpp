@@ -1,9 +1,9 @@
 #include <fstream>
-#include <sstream>   //to format error output nicely
-#include <stdexcept> //for throwing runtime errors
+#include <sstream>
+#include <stdexcept>
+#include <iostream>
 #include <core/memory/rom.h>
 
-#include <iostream>
 
 ROM::ROM(std::string file_path) {
     std::ifstream file(file_path, std::ios::binary);

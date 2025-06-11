@@ -1,5 +1,5 @@
-#include <sstream>   //to format error output nicely
-#include <stdexcept> //for throwing runtime errors
+#include <sstream>
+#include <stdexcept>
 #include "core/interconnect/gb.h"
 #include "core/boot/boot.h"
 #include "core/cpu/cpu.h"
@@ -15,19 +15,18 @@ GB::GB(std::string boot_file_path, std::string cartridge_file_path) {
   io = new IO();
   rom = new ROM(cartridge_file_path);
 }
+
 GB::~GB() {
   delete cpu;
   delete boot;
 }
+
 uint8_t GB::cpu_read8(uint16_t addr) {
   if (boot_mode_enabled && boot_range.in_range(addr)) {
     return boot->read8(boot_range.offset_of(addr));
   }
-  else if(ie_range.in_range(addr)){
+  else if (ie_range.in_range(addr)) {
     return ie.reg;
-  }
-  else if(if_range.in_range(addr)){
-    return iflag.reg;
   }
   else if (vram_range.in_range(addr)) {
     return vram->read8(vram_range.offset_of(addr));
@@ -45,7 +44,6 @@ uint8_t GB::cpu_read8(uint16_t addr) {
 }
 
 uint16_t GB::cpu_read16(uint16_t addr) {
-
   if (boot_mode_enabled && boot_range.in_range(addr)) {
     return boot->read16(boot_range.offset_of(addr));
   }
@@ -65,20 +63,15 @@ uint16_t GB::cpu_read16(uint16_t addr) {
 }
 
 void GB::cpu_write8(uint16_t addr, uint8_t data) {
-  if(vram_range.in_range(addr)){
+  if (vram_range.in_range(addr)) {
     vram->write8(vram_range.offset_of(addr), data);
     return;
   }
-  else if(ie_range.in_range(addr)){
+  else if (ie_range.in_range(addr)) {
     ie.reg = data;
     return;
   }
-  else if(if_range.in_range(addr)){
-    iflag.reg = data;
-    return;
-  }
-  
-  if(io_range.in_range(addr)){
+  else if (io_range.in_range(addr)) {
     io->write8(io_range.offset_of(addr), data);
     return;
   }
@@ -89,12 +82,12 @@ void GB::cpu_write8(uint16_t addr, uint8_t data) {
 }
 
 void GB::cpu_write16(uint16_t addr, uint16_t data) {
-  if(vram_range.in_range(addr)){
+  if (vram_range.in_range(addr)) {
     vram->write16(vram_range.offset_of(addr), data);
     return;
   }
 
-  if(io_range.in_range(addr)){
+  if (io_range.in_range(addr)) {
     io->write16(io_range.offset_of(addr), data);
     return;
   }

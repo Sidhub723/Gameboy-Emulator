@@ -1,5 +1,5 @@
-#include <sstream>   //to format error output nicely
-#include <stdexcept> //for throwing runtime errors
+#include <sstream>
+#include <stdexcept>
 #include <core/memory/io.h>
 
 

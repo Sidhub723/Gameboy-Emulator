@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <string>
 
-class ROM;
-
 
 class ROM {
 public:
