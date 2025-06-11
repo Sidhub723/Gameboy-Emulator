@@ -1,30 +1,6 @@
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include "core/cpu/cpu.h"
-
-bool CPU::get_flag(uint8_t mask) {
-  return AF.lo & ~mask;
-}
-
-void CPU::set_flag(uint8_t mask, bool flag_val) {
-  if (flag_val) AF.lo = AF.lo | ~mask;
-  else AF.lo = AF.lo & mask;
-}
-
-void CPU::read_ins() {
-  op = read8(PC++); 
-  // if(PC == 0x0100){
-  //   gb->set_boot_mode(false);
-  // }
-}
-
-void CPU::call_interrupt(uint16_t addr) {
-  ime = false;
-  write16(--SP, PC);
-  PC = addr;
-  cycles = 5;
-}
 
 void CPU::initialize_register_maps() {
   // populating the register operands map
@@ -322,35 +298,4 @@ void CPU::initialize_arithmetic_ins() {
     // Others
     instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
   }
-}
-
-void CPU::print_regs() {
-  std::cout << std::endl;
-  std::cout << "AF: 0x" << std::hex << AF.full << std::endl;
-  std::cout << "BC: 0x" << std::hex << BC.full << std::endl;
-  std::cout << "DE: 0x" << std::hex << DE.full << std::endl;
-  std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
-  std::cout << "SP: 0x" << std::hex << SP << std::endl;
-  std::cout << "PC: 0x" << std::hex << PC << std::endl;
-  std::cout << std::endl;
-}
-
-void CPU::set_state(CPUState state) {
-  AF.full = state.AF.full;
-  BC.full = state.BC.full;
-  DE.full = state.DE.full;
-  HL.full = state.HL.full;
-  SP = state.SP;
-  PC = state.PC;
-}
-
-CPUState CPU::get_state() {
-  CPUState state;
-  state.AF.full = AF.full;
-  state.BC.full = BC.full;
-  state.DE.full = DE.full;
-  state.HL.full = HL.full;
-  state.SP = SP;
-  state.PC = PC;
-  return state;
 }

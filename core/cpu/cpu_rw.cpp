@@ -1,54 +1,34 @@
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 #include "core/cpu/cpu.h"
 #include "core/interconnect/gb.h"
 
-uint8_t CPU::read8(uint16_t addr) { return gb->cpu_read8(addr); }
-uint16_t CPU::read16(uint16_t addr) { return gb->cpu_read16(addr); }
+uint8_t CPU::read8(uint16_t addr) {
+    return gb->read8(addr);
+}
 
-void CPU::write8(uint16_t addr, uint8_t data) {gb->cpu_write8(addr, data);}
-void CPU::write16(uint16_t addr, uint16_t data) {gb->cpu_write16(addr, data);}
+uint16_t CPU::read16(uint16_t addr) {
+    return gb->read16(addr);
+}
 
-void CPU::DI() {ime = false;}
-void CPU::EI() {ime = true;}
+void CPU::write8(uint16_t addr, uint8_t data) {
+    gb->write8(addr, data);
+}
 
-void CPU::HALT() {
-    Interrupt ie = gb->get_ie();
-    Interrupt iflag = gb->get_iflag();
+void CPU::write16(uint16_t addr, uint16_t data) {
+    gb->write16(addr, data);
+}
 
-    if(ime)
-    {
-        if(ie.get_vblank() && iflag.get_vblank())
-        {
-            iflag.set_vblank(false);
-            call_interrupt(0x40);
-        }
-        else if(ie.get_lcd_stat() && iflag.get_lcd_stat())
-        {
-            iflag.set_lcd_stat(false);
-            call_interrupt(0x48);
-        }
-        else if(ie.get_timer() && iflag.get_timer())
-        {
-            iflag.set_timer(false);
-            call_interrupt(0x50);
-        }
-        else if(ie.get_serial() && iflag.get_serial())
-        {
-            iflag.set_serial(false);
-            call_interrupt(0x58);
-        }
-        else if(ie.get_joypad() && iflag.get_joypad())
-        {
-            iflag.set_joypad(false);
-            call_interrupt(0x60);
-        }
+// Util Functions
 
-        gb->set_iflag(iflag);
-    }
-    else if((ie.reg & iflag.reg) != 0)
-    {
-        //halt bug
-        halt_bug = true;
-    }
+void CPU::print_regs() {
+  std::cout << std::endl;
+  std::cout << "AF: 0x" << std::hex << AF.full << std::endl;
+  std::cout << "BC: 0x" << std::hex << BC.full << std::endl;
+  std::cout << "DE: 0x" << std::hex << DE.full << std::endl;
+  std::cout << "HL: 0x" << std::hex << HL.full << std::endl;
+  std::cout << "SP: 0x" << std::hex << SP << std::endl;
+  std::cout << "PC: 0x" << std::hex << PC << std::endl;
+  std::cout << std::endl;
 }

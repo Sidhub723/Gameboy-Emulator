@@ -2,6 +2,7 @@
 #define GB_H
 
 #include <stdint.h>
+#include <cassert>
 #include <string>
 
 #define BOOT_RANGE 0x0000, 0x00FF
@@ -17,9 +18,10 @@
 
 class CPU;
 class Boot;
+class ROM;
 class VRAM;
 class IO;
-class ROM;
+class HRAM;
 
 struct Range
 {
@@ -28,7 +30,7 @@ struct Range
   Range(uint16_t start, uint16_t end) : start(start), end(end) {}
 
   bool in_range(uint16_t addr) { return addr >= start && addr <= end; }
-  uint16_t offset_of(uint16_t addr) { return addr - start; }
+  uint16_t offset_of(uint16_t addr) { assert(in_range(addr)); return addr - start; }
 };
 
 struct Interrupt
@@ -58,13 +60,12 @@ public:
   GB(std::string boot_file_path, std::string cartridge_file_path);
   ~GB();
   
-  uint8_t cpu_read8(uint16_t addr);
-  void cpu_write8(uint16_t addr, uint8_t data);
-  uint16_t cpu_read16(uint16_t addr);
-  void cpu_write16(uint16_t addr, uint16_t data);
+  uint8_t read8(uint16_t addr);
+  void write8(uint16_t addr, uint8_t data);
+  uint16_t read16(uint16_t addr);
+  void write16(uint16_t addr, uint16_t data);
   
   void clock();
-  void set_boot_mode(bool set_val) { boot_mode_enabled = set_val; }
   
   Interrupt get_ie() { return ie; }
   void set_ie(Interrupt val) { ie = val; }
@@ -80,9 +81,10 @@ private:
 
   CPU *cpu;
   Boot *boot;
+  ROM *rom;
   VRAM *vram;
   IO *io;
-  ROM *rom;
+  HRAM *hram;
 
 private:
   Range boot_range = Range(BOOT_RANGE);
