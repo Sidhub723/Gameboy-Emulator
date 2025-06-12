@@ -22,11 +22,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b100) {
       // SLA
       if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-        HL_Wrapper(PFX_SLA);
+        HL_Wrapper(&CPU::PFX_SLA);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_SLA);
+        R8_Wrapper(&CPU::PFX_SLA);
         cycles = (1 + 1);
       }
     }
@@ -34,11 +34,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b000) {
       // RLC
       if (pfx_register_index == 0b110) {
-        HL_Wrapper(PFX_RLC);
+        HL_Wrapper(&CPU::PFX_RLC);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_RLC);
+        R8_Wrapper(&CPU::PFX_RLC);
         cycles = (1 + 1);
       }
     }
@@ -46,11 +46,11 @@ void CPU::PFX()
     if (pfx_bit_index == 0b101) { // SRA
       // SRA
       if (pfx_register_index == 0b110) {
-        HL_Wrapper(PFX_SRA);
+        HL_Wrapper(&CPU::PFX_SRA);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_SRA);
+        R8_Wrapper(&CPU::PFX_SRA);
         cycles = (1 + 1);
       }
     }
@@ -58,11 +58,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b001) {
       // RRC
       if (pfx_register_index == 0b110) {
-        HL_Wrapper(PFX_RRC);
+        HL_Wrapper(&CPU::PFX_RRC);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_RRC);
+        R8_Wrapper(&CPU::PFX_RRC);
         cycles = (1 + 1);
       }
     }
@@ -70,11 +70,11 @@ void CPU::PFX()
     if (pfx_bit_index == 0b111) { // SRL
       // SRL
       if (pfx_register_index == 0b110) {
-        HL_Wrapper(PFX_SRL);
+        HL_Wrapper(&CPU::PFX_SRL);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_SRL);
+        R8_Wrapper(&CPU::PFX_SRL);
         cycles = (1 + 1);
       }
     }
@@ -82,11 +82,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b010) {
       // RL
       if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-        HL_Wrapper(PFX_RL);
+        HL_Wrapper(&CPU::PFX_RL);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_RL);
+        R8_Wrapper(&CPU::PFX_RL);
         cycles = (1 + 1);
       }
     }
@@ -94,11 +94,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b011) {
       // RR
       if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-        HL_Wrapper(PFX_RR);
+        HL_Wrapper(&CPU::PFX_RR);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_RR);
+        R8_Wrapper(&CPU::PFX_RR);
         cycles = (1 + 1);
       }
     }
@@ -106,11 +106,11 @@ void CPU::PFX()
     if (pfx_rs_family_index == 0b110) {
       // SWAP
       if (pfx_register_index == 0b110) {
-        HL_Wrapper(PFX_SWAP);
+        HL_Wrapper(&CPU::PFX_SWAP);
         cycles = (3 + 1);
       }
       else {
-        R8_Wrapper(PFX_SWAP);
+        R8_Wrapper(&CPU::PFX_SWAP);
         cycles = (1 + 1);
       }
     }
@@ -118,33 +118,33 @@ void CPU::PFX()
   else if (pfx_ins_family_index == 0b01) {
     // BIT family
     if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-      HL_Wrapper(PFX_BIT);
+      HL_Wrapper(&CPU::PFX_BIT);
       cycles = (2 + 1);
     }
     else {
-      R8_Wrapper(PFX_BIT);
+      R8_Wrapper(&CPU::PFX_BIT);
       cycles = (1 + 1);
     }
   }
   else if (pfx_ins_family_index == 0b10) {
     // RES family
     if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-      HL_Wrapper(PFX_RES);
+      HL_Wrapper(&CPU::PFX_RES);
       cycles = (3 + 1);
     }
     else {
-      R8_Wrapper(PFX_RES);
+      R8_Wrapper(&CPU::PFX_RES);
       cycles = (1 + 1);
     }
   }
   else if (pfx_ins_family_index == 0b11) {
     // SET family
     if (pfx_register_index == 0b110) { // 0b110 corresponds to (HL) operand
-      HL_Wrapper(PFX_SET);
+      HL_Wrapper(&CPU::PFX_SET);
       cycles = (3 + 1);
     }
     else {
-      R8_Wrapper(PFX_SET);
+      R8_Wrapper(&CPU::PFX_SET);
       cycles = (1 + 1);
     }
   }
