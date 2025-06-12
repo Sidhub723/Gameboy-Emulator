@@ -379,19 +379,19 @@ void CPU::JR_NC() {
 // SECTION - Rotate Instructions
 // Same as corresponding PFX ins, but for A register
 void CPU::RLA() {
-  A_Wrapper(PFX_RL);
+  A_Wrapper(&CPU::PFX_RL);
 }
 
 void CPU::RLCA() {
-  A_Wrapper(PFX_RLC);
+  A_Wrapper(&CPU::PFX_RLC);
 }
 
 void CPU::RRA() {
-  A_Wrapper(PFX_RR);
+  A_Wrapper(&CPU::PFX_RR);
 }
 
 void CPU::RRCA() {
-  A_Wrapper(PFX_RRC);
+  A_Wrapper(&CPU::PFX_RRC);
 }
 
 // SECTION: Misc Instructions
