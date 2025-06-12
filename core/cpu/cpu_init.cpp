@@ -150,27 +150,28 @@ void CPU::initialize_jmp_rel_ins() {
 
 void CPU::initialize_load_ins() {
   // Initializing map for the 4 rows of LOAD ins
-  for (uint16_t op_iter = 0x40; op_iter < 0x80; op_iter++) {
+  for (uint8_t op_iter = 0x40; op_iter < 0x80; op_iter++) {
     if (op_iter == 0x76) continue; // HALT ins
 
-    if (op_iter>=0x70 && op_iter<0x80) {
-      // (HL) case LHS
-      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
+    if (op_iter >= 0x70 && op_iter <= 0x77) {
+      // R8 -> (HL)
+      instruction_map[op_iter] = FuncDetails(&CPU::LDHL8, &CPU::LDfromR8, 2);
     }
     else if ((op_iter & 0b111) == 0b110) {
-      // (HL) case RHS
-      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
+      // (HL) -> R8
+      instruction_map[op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromHL8, 2);
     }
     else {
-      instruction_map[(uint8_t)op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromR8, 1);
+      // R8 -> R8
+      instruction_map[op_iter] = FuncDetails(&CPU::LDR8, &CPU::LDfromR8, 1);
     }
   }
 
   // Initializing map for +6 & +E LD ins
   for(uint8_t op_iter=0x06; op_iter<=0x3E; op_iter+=0x8) {
     uint8_t cyc;
-    if((op_iter>>3) == 0b110) cyc=3; // (HL) case
-    else cyc=2;
+    if (op_iter == 0x36) cyc = 3; // (HL) case
+    else cyc = 2;
 
     instruction_map[op_iter] = FuncDetails(&CPU::LDIMM8, &CPU::IMM8, cyc);
   }
@@ -205,8 +206,9 @@ void CPU::initialize_load_ins() {
 
 void CPU::initialize_arithmetic_ins() {
   // Initializing map for the 4 rows of Arithmetic ins
-  for(uint8_t op_iter=0x80; op_iter<0xC0; op_iter++){
+  for(uint8_t op_iter = 0x80; op_iter < 0xC0; op_iter++){
     uint8_t register_index = op_iter & 0b111;
+
     switch ((op_iter >> 3) & 0b111) { // operation type
       case 0b000:
         // ADD
@@ -256,46 +258,46 @@ void CPU::initialize_arithmetic_ins() {
         else instruction_map[op_iter] = FuncDetails(&CPU::CPA, &CPU::LDfromR8, 1);
         break;
     }
-
-    // Initializing INC/DEC ins
-    // INC
-    for (uint8_t op_iter = 0x04; op_iter <= 0x3C; op_iter += 0x8) {
-      if (op_iter >> 3 == 0b110)
-        instruction_map[op_iter] = FuncDetails(&CPU::INCHL, &CPU::IMP, 3); // (HL) case
-      else
-        instruction_map[op_iter] = FuncDetails(&CPU::INCR8, &CPU::IMP, 1);
-    }
-    // DEC
-    for (uint8_t op_iter = 0x05; op_iter <= 0x3D; op_iter += 0x8) {
-      if (op_iter >> 3 == 0b110)
-        instruction_map[op_iter] = FuncDetails(&CPU::DECHL, &CPU::IMP, 3); // (HL) case
-      else
-        instruction_map[op_iter] = FuncDetails(&CPU::DECR8, &CPU::IMP, 1);
-    }
-
-    // Initializing R16 INC/DEC ins
-    // INC
-    instruction_map[0x03] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
-    instruction_map[0x13] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
-    instruction_map[0x23] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
-    instruction_map[0x33] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
-    // DEC
-    instruction_map[0x0B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
-    instruction_map[0x1B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
-    instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
-    instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
-
-    // Bottom x6 and xE column
-    instruction_map[0xC6] = FuncDetails(&CPU::ADDA, &CPU::IMM8, 2);
-    instruction_map[0xCE] = FuncDetails(&CPU::ADCA, &CPU::IMM8, 2);
-    instruction_map[0xD6] = FuncDetails(&CPU::SUBA, &CPU::IMM8, 2);
-    instruction_map[0xDE] = FuncDetails(&CPU::SBCA, &CPU::IMM8, 2);
-    instruction_map[0xE6] = FuncDetails(&CPU::ANDA, &CPU::IMM8, 2);
-    instruction_map[0xEE] = FuncDetails(&CPU::XORA, &CPU::IMM8, 2);
-    instruction_map[0xF6] = FuncDetails(&CPU::ORA, &CPU::IMM8, 2);
-    instruction_map[0xFE] = FuncDetails(&CPU::CPA, &CPU::IMM8, 2);
-
-    // Others
-    instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
   }
+
+  // Initializing INC/DEC ins
+  // INC
+  for (uint8_t op_iter = 0x04; op_iter <= 0x3C; op_iter += 0x8) {
+    if (op_iter == 0x34)
+      instruction_map[op_iter] = FuncDetails(&CPU::INCHL, &CPU::IMP, 3); // (HL) case
+    else
+      instruction_map[op_iter] = FuncDetails(&CPU::INCR8, &CPU::IMP, 1);
+  }
+  // DEC
+  for (uint8_t op_iter = 0x05; op_iter <= 0x3D; op_iter += 0x8) {
+    if (op_iter == 0x35)
+      instruction_map[op_iter] = FuncDetails(&CPU::DECHL, &CPU::IMP, 3); // (HL) case
+    else
+      instruction_map[op_iter] = FuncDetails(&CPU::DECR8, &CPU::IMP, 1);
+  }
+
+  // Initializing R16 INC/DEC ins
+  // INC
+  instruction_map[0x03] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+  instruction_map[0x13] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+  instruction_map[0x23] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+  instruction_map[0x33] = FuncDetails(&CPU::INC16, &CPU::IMP, 2);
+  // DEC
+  instruction_map[0x0B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+  instruction_map[0x1B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+  instruction_map[0x2B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+  instruction_map[0x3B] = FuncDetails(&CPU::DEC16, &CPU::IMP, 2);
+
+  // Bottom x6 and xE column
+  instruction_map[0xC6] = FuncDetails(&CPU::ADDA, &CPU::IMM8, 2);
+  instruction_map[0xCE] = FuncDetails(&CPU::ADCA, &CPU::IMM8, 2);
+  instruction_map[0xD6] = FuncDetails(&CPU::SUBA, &CPU::IMM8, 2);
+  instruction_map[0xDE] = FuncDetails(&CPU::SBCA, &CPU::IMM8, 2);
+  instruction_map[0xE6] = FuncDetails(&CPU::ANDA, &CPU::IMM8, 2);
+  instruction_map[0xEE] = FuncDetails(&CPU::XORA, &CPU::IMM8, 2);
+  instruction_map[0xF6] = FuncDetails(&CPU::ORA, &CPU::IMM8, 2);
+  instruction_map[0xFE] = FuncDetails(&CPU::CPA, &CPU::IMM8, 2);
+
+  // Others
+  instruction_map[0xE8] = FuncDetails(&CPU::ADD_SP, &CPU::IMM8, 4);
 }

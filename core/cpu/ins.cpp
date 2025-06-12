@@ -13,13 +13,10 @@ void CPU::LDR8() {
 void CPU::LDIMM8() {
   // made for x6 & xE LOAD ins
   uint8_t index = (op >> 3) & 0b111;
-  if (index == 0b110) {
-    // (HL) case
-    write8(HL.full, operand);
-  }
-  else {
+  if (index == 0b110)
+    write8(HL.full, operand); // (HL) case
+  else
     *register_operands_map[index] = operand;
-  }
 }
 
 void CPU::LDHL8() {
@@ -203,10 +200,6 @@ void CPU::INC16() {
 void CPU::DEC16() {
   uint8_t index = (op >> 4) & 0b11;
   *(u16_register_operands_map[index])--;
-}
-
-void CPU::WRA() {
-  write8(operand_addr, AF.hi);
 }
 
 // REVIEW: The last line here might cause a bug

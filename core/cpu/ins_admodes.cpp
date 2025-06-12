@@ -28,7 +28,7 @@ void CPU::HLD() {
 }
 
 void CPU::LDfromR8() {
-  // Made for the 4 LOAD ins rows
+  // Made for the 4 LOAD ins & 4 Arithmetic ins rows
   operand = *register_operands_map[op & 0b111]; // assuming tmp != nullptr for (HL)
 }
 

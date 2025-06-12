@@ -130,8 +130,6 @@ private:
   void DECHL(); // Decrement - (HL) case
   void INC16();
   void DEC16();
-
-  void WRA();    // Write A into Memory
   void ADD_SP(); // Add s8 to SP
 
   void POP();  // Pop from stack
@@ -231,7 +229,7 @@ private:
   uint8_t cycles;
   bool ime;
   bool halt_bug;
-  bool print_enbled = false; // for debugging purposes
+  bool print_enabled; // for debugging purposes
 
 private:
   GB *gb;

@@ -9,6 +9,8 @@ CPU::CPU(GB *gb) : gb(gb) {
   cycles = 0;
   op = 0;
 
+  print_enabled = true; // for debugging purposes
+
   // populating the register maps
   initialize_register_maps();
 
