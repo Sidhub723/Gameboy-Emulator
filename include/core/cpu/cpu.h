@@ -57,12 +57,15 @@ public:
   void write8(uint16_t addr, uint8_t data);
   void write16(uint16_t addr, uint16_t data);
 
-  void set_state(CPUState state);
+  void read_ins();
+  bool get_flag(uint8_t mask);
+  void set_flag(uint8_t mask, bool flag_val);
+
   CPUState get_state();
+  void set_state(CPUState state);
 
   bool get_ime() { return ime; }
   void call_interrupt(uint16_t addr);
-  void print_regs();
 
   // SECTION - Initialize instruction maps
 public:
@@ -78,11 +81,6 @@ public:
   void initialize_jmp_rel_ins();
   void initialize_misc_ins();
   void initialize_rot_ins();
-
-private:
-  void read_ins();
-  bool get_flag(uint8_t mask);
-  void set_flag(uint8_t mask, bool flag_val);
 
   // SECTION - Addressing Modes
 private:
@@ -171,6 +169,13 @@ private:
   void JR_C();  // Jump if carry
   void JR_NC(); // Jump if not carry
 
+  // Rotate Instructions
+  // (same as corresponding PFX ins, but for A register)
+  void RLA();
+  void RLCA();
+  void RRA();
+  void RRCA();
+
   // Misc Instructions
   void NOP();  // No Operation
   void HALT(); // Halt
@@ -182,17 +187,9 @@ private:
   void SCF();  // Set Carry Flag
   void CCF();  // Complement Carry Flag
 
-  // Rotate Instructions
-  void RLCA();
-  void RLA();
-  void RRCA();
-  void RRA();
-
   // SECTION Prefix Instructions
 private:
   void PFX();
-  void R8_Wrapper(void (CPU::*ins)());
-  void HL_Wrapper(void (CPU::*ins)());
 
   void PFX_BIT();   // Check a specific bit (affects Z flag)
   void PFX_SET();   // Set a specific bit
@@ -205,6 +202,14 @@ private:
   void PFX_SRA();   // Arithmetic shift right (bit 0 → C, bit 7 unchanged)
   void PFX_SRL();   // Logical shift right (bit 0 → C, bit 7 = 0)
   void PFX_SWAP();  // Swap upper and lower nibbles
+
+  // SECTION - Utils
+private:
+  void R8_Wrapper(void (CPU::*ins)());
+  void HL_Wrapper(void (CPU::*ins)());
+  void A_Wrapper(void (CPU::*ins)());
+  
+  void print_regs();
 
 private:
   uint16_t SP;           // stack pointer

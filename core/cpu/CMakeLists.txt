@@ -2,6 +2,7 @@ add_library(GBEmuCPU
     cpu.cpp
     cpu_init.cpp
     cpu_rw.cpp
+    cpu_utils.cpp
     ins_admodes.cpp
     ins.cpp
     ins_prefix.cpp
@@ -11,6 +12,7 @@ add_library(GBEmuCPU
 add_library(GBEmuCPUNoRW
     cpu.cpp
     cpu_init.cpp
+    cpu_utils.cpp
     ins_admodes.cpp
     ins.cpp
     ins_prefix.cpp

@@ -149,23 +149,50 @@ void CPU::CPA() {
 }
 
 void CPU::INCR8() {
-  // Not meant for (HL) case
   uint8_t index = (op >> 3) & 0b111;
-  (*register_operands_map[index])++;
+  operand = *register_operands_map[index];
+
+  set_flag(Flags::half_carry, (operand & 0x0F) == 0x0F);
+  operand++;
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+
+  *register_operands_map[index] = operand;
 }
 
 void CPU::INCHL() {
-  write8(HL.full, read8(HL.full) + 1);
+  operand = read8(HL.full);
+
+  set_flag(Flags::half_carry, (operand & 0x0F) == 0x0F);
+  operand++;
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+
+  write8(HL.full, operand);
 }
 
+// REVIEW: Verify the HC flag
 void CPU::DECR8() {
-  // Not meant for (HL) case
   uint8_t index = (op >> 3) & 0b111;
-  (*register_operands_map[index])--;
+  operand = *register_operands_map[index];
+
+  set_flag(Flags::half_carry, (operand & 0x0F) == 0x00);
+  operand--;
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 1);
+
+  *register_operands_map[index] = operand;
 }
 
 void CPU::DECHL() {
-  write8(HL.full, read8(HL.full) - 1);
+  operand = read8(HL.full);
+
+  set_flag(Flags::half_carry, (operand & 0x0F) == 0x00);
+  operand--;
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 1);
+
+  write8(HL.full, operand);
 }
 
 void CPU::INC16() {
@@ -357,40 +384,21 @@ void CPU::JR_NC() {
 }
 
 // SECTION - Rotate Instructions
-void CPU::RLCA() {
-  uint8_t carry = (AF.hi & 0x80) >> 7;
-  AF.hi = (AF.hi << 1) | carry;
-  set_flag(Flags::zero, !(AF.hi));
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, carry);
-}
-
+// Same as corresponding PFX ins, but for A register
 void CPU::RLA() {
-  uint8_t carry = (AF.hi & 0x80) >> 7;
-  AF.hi = (AF.hi << 1) | get_flag(Flags::carry);
-  set_flag(Flags::zero, !(AF.hi));
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, carry);
+  A_Wrapper(PFX_RL);
 }
 
-void CPU::RRCA() {
-  uint8_t carry = AF.hi & 0x01;
-  AF.hi = (AF.hi >> 1) | (carry << 7);
-  set_flag(Flags::zero, !(AF.hi));
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, carry);
+void CPU::RLCA() {
+  A_Wrapper(PFX_RLC);
 }
 
 void CPU::RRA() {
-  uint8_t carry = AF.hi & 0x01;
-  AF.hi = (AF.hi >> 1) | (get_flag(Flags::carry) << 7);
-  set_flag(Flags::zero, !(AF.hi));
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, carry);
+  A_Wrapper(PFX_RR);
+}
+
+void CPU::RRCA() {
+  A_Wrapper(PFX_RRC);
 }
 
 // SECTION: Misc Instructions

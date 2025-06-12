@@ -150,20 +150,6 @@ void CPU::PFX()
   }
 }
 
-// SECTION: Wrapper functions for R8 & HL cases
-
-void CPU::R8_Wrapper(void (CPU::*ins)()) {
-  operand = *pfx_register_ptr;
-  (this->*ins)();
-  *pfx_register_ptr = operand;
-}
-
-void CPU::HL_Wrapper(void (CPU::*ins)()) {
-  operand = read8(HL.full);
-  (this->*ins)();
-  write8(HL.full, operand);
-}
-
 // SECTION: Instructions for Prefix Family
 
 void CPU::PFX_BIT()
@@ -185,11 +171,11 @@ void CPU::PFX_RES()
 
 void CPU::PFX_RL()
 { 
-  uint8_t carry = get_flag(Flags::carry);
+  uint8_t new_lsb = get_flag(Flags::carry);
   set_flag(Flags::carry, (operand & 0b10000000));
 
   operand <<= 1;
-  operand |= carry;
+  operand |= new_lsb;
   
   set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
@@ -198,11 +184,11 @@ void CPU::PFX_RL()
 
 void CPU::PFX_RLC()
 { 
-  uint8_t carry = (operand >> 7) & 0b00000001;
+  uint8_t new_lsb = (operand >> 7) & 0b00000001;
   set_flag(Flags::carry, (operand & 0b10000000));
   
   operand <<= 1;
-  operand |= carry;
+  operand |= new_lsb;
   
   set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
@@ -211,11 +197,11 @@ void CPU::PFX_RLC()
 
 void CPU::PFX_RR()
 { 
-  uint8_t carry = get_flag(Flags::carry);
+  uint8_t new_msb = get_flag(Flags::carry);
   set_flag(Flags::carry, (operand & 0b00000001));
   
   operand >>= 1;
-  operand |= (carry << 7);
+  operand |= (new_msb << 7);
   
   set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
@@ -224,11 +210,11 @@ void CPU::PFX_RR()
 
 void CPU::PFX_RRC()
 { 
-  uint8_t carry = operand & 0b00000001;
+  uint8_t new_msb = operand & 0b00000001;
   set_flag(Flags::carry, (operand & 0b00000001));
   
   operand >>= 1;
-  operand |= (carry << 7);
+  operand |= (new_msb << 7);
   
   set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
