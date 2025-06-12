@@ -4,7 +4,8 @@
 
 // SECTION - PREFIX INSTRUCTIONS
 
-// Main Loop
+// SECTION - Main Loop
+
 void CPU::PFX()
 {
   read_ins();
@@ -149,7 +150,8 @@ void CPU::PFX()
   }
 }
 
-// Wrapper functions for R8 & HL cases
+// SECTION: Wrapper functions for R8 & HL cases
+
 void CPU::R8_Wrapper(void (CPU::*ins)()) {
   operand = *pfx_register_ptr;
   (this->*ins)();
@@ -162,11 +164,7 @@ void CPU::HL_Wrapper(void (CPU::*ins)()) {
   write8(HL.full, operand);
 }
 
-// Instructions for Prefix Family
-void CPU::PFX_SET()
-{
-  operand |= (1 << pfx_bit_index);
-}
+// SECTION: Instructions for Prefix Family
 
 void CPU::PFX_BIT()
 {
@@ -175,92 +173,108 @@ void CPU::PFX_BIT()
   set_flag(Flags::half_carry, 1);
 }
 
+void CPU::PFX_SET()
+{
+  operand |= (1 << pfx_bit_index);
+}
+
 void CPU::PFX_RES()
 {
   operand &= ~(1 << pfx_bit_index);
 }
 
-void CPU::PFX_SLA()
-{
+void CPU::PFX_RL()
+{ 
+  uint8_t carry = get_flag(Flags::carry);
+  set_flag(Flags::carry, (operand & 0b10000000));
+
+  operand <<= 1;
+  operand |= carry;
+  
+  set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, (operand & 0b10000000));
-  operand <<= 1;
-  set_flag(Flags::zero, operand == 0);
 }
 
-void CPU::PFX_RL()
-{
+void CPU::PFX_RLC()
+{ 
+  uint8_t carry = (operand >> 7) & 0b00000001;
+  set_flag(Flags::carry, (operand & 0b10000000));
+  
+  operand <<= 1;
+  operand |= carry;
+  
+  set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  uint8_t temp = get_flag(Flags::carry);
-  set_flag(Flags::carry, ((operand) & (0b10000000)));
-  (operand) <<= 1;
-  operand |= temp; // Based on the previous carry flag
-  set_flag(Flags::zero, !(operand));
 }
 
 void CPU::PFX_RR()
-{
+{ 
+  uint8_t carry = get_flag(Flags::carry);
+  set_flag(Flags::carry, (operand & 0b00000001));
+  
+  operand >>= 1;
+  operand |= (carry << 7);
+  
+  set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
-  uint8_t temp = get_flag(Flags::carry);
-  set_flag(Flags::carry, ((operand) & (0b00000001)));
-  (operand) >>= 1;
-  operand |= (temp << 7); // Based on the previous carry flag
-  set_flag(Flags::zero, !(operand));
+}
+
+void CPU::PFX_RRC()
+{ 
+  uint8_t carry = operand & 0b00000001;
+  set_flag(Flags::carry, (operand & 0b00000001));
+  
+  operand >>= 1;
+  operand |= (carry << 7);
+  
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+}
+
+void CPU::PFX_SLA()
+{
+  set_flag(Flags::carry, (operand & 0b10000000));
+  
+  operand <<= 1;
+
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+}
+
+void CPU::PFX_SRA()
+{
+  set_flag(Flags::carry, (operand & 0b00000001));
+  
+  operand = (operand >> 1) | (operand & 0b10000000); 
+
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
+}
+
+void CPU::PFX_SRL()
+{
+  set_flag(Flags::carry, (operand & 0b00000001));
+  
+  operand >>= 1;
+
+  set_flag(Flags::zero, !operand);
+  set_flag(Flags::neg, 0);
+  set_flag(Flags::half_carry, 0);
 }
 
 void CPU::PFX_SWAP()
 {
   uint8_t upnibble = operand >> 4;
-  operand = operand << 4;
-  operand = operand | upnibble;
+  operand = (operand << 4) | upnibble;
 
-  set_flag(Flags::zero, !(operand));
+  set_flag(Flags::zero, !operand);
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, 0);
-}
-
-void CPU::PFX_SRA()
-{
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, (operand & 0b00000001));
-  operand = (operand >> 1) | (operand & 0b10000000); 
-  set_flag(Flags::zero, operand == 0);
-}
-
-void CPU::PFX_SRL()
-{
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::carry, (operand & 0b00000001));
-  operand = operand >> 1;
-  set_flag(Flags::zero, operand == 0);
-}
-
-void CPU::PFX_RLC()
-{
-  uint8_t bit_7 = (operand) >> 7;
-  operand <<= 1;
-  operand |= bit_7;
-
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::zero, operand == 0);
-  set_flag(Flags::carry, bit_7);
-}
-
-void CPU::PFX_RRC()
-{
-  uint8_t bit_0 = (operand) & 1;
-  operand >>= 1;
-  operand |= (bit_0 << 7);
-
-  set_flag(Flags::neg, 0);
-  set_flag(Flags::half_carry, 0);
-  set_flag(Flags::zero, operand == 0);
-  set_flag(Flags::carry, bit_0);
 }

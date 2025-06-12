@@ -194,17 +194,17 @@ private:
   void R8_Wrapper(void (CPU::*ins)());
   void HL_Wrapper(void (CPU::*ins)());
 
-  void PFX_SET();
-  void PFX_BIT();
-  void PFX_RES();
-  void PFX_SLA();
-  void PFX_RL();
-  void PFX_RR();
-  void PFX_SWAP();
-  void PFX_SRA();
-  void PFX_SRL();
-  void PFX_RLC();
-  void PFX_RRC();
+  void PFX_BIT();   // Check a specific bit (affects Z flag)
+  void PFX_SET();   // Set a specific bit
+  void PFX_RES();   // Reset a specific bit
+  void PFX_RL();    // Rotate left through Carry (bit 7 → C, C → bit 0)
+  void PFX_RLC();   // Rotate left (bit 7 → bit 0 and Carry, no carry input)
+  void PFX_RR();    // Rotate right through Carry (bit 0 → C, C → bit 7)
+  void PFX_RRC();   // Rotate right (bit 0 → bit 7 and Carry, no carry input)
+  void PFX_SLA();   // Shift left into Carry (bit 7 → C, bit 0 = 0)
+  void PFX_SRA();   // Arithmetic shift right (bit 0 → C, bit 7 unchanged)
+  void PFX_SRL();   // Logical shift right (bit 0 → C, bit 7 = 0)
+  void PFX_SWAP();  // Swap upper and lower nibbles
 
 private:
   uint16_t SP;           // stack pointer
@@ -226,6 +226,7 @@ private:
   uint8_t cycles;
   bool ime;
   bool halt_bug;
+  bool print_enbled = false; // for debugging purposes
 
 private:
   GB *gb;
