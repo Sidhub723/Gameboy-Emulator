@@ -191,28 +191,20 @@ private:
   // SECTION Prefix Instructions
 private:
   void PFX();
-  void PFX_SET_R8();
-  void PFX_SET_HL();
-  void PFX_BIT_HL(); // prefix instruction for BIT Instructions with HL
-  void PFX_BIT_R8(); // prefix instruction for BIT Instructions
-  void PFX_SLA_R8(); // Shift Left Arithmetically for r8
-  void PFX_SLA_HL(); // Shift Left Arithmetically for HL
-  void PFX_RES_R8();
-  void PFX_RES_HL();
-  void PFX_RLC_R8();
-  void PFX_RLC_HL();
-  void PFX_RRC_R8();
-  void PFX_RRC_HL();
-  void PFX_SRA_R8(); // prefix instruction for arithmetic right shift
-  void PFX_SRA_HL(); // prefix instruction for arithmetic right shift with HL
-  void PFX_SRL_R8(); // prefix instruction for logical right shift
-  void PFX_SRL_HL(); // prefix instruction for logical right shift with HL
-  void PFX_RL_HL();  // Rotate Left for HL
-  void PFX_RL_R8();  // Rotate Left for r8
-  void PFX_RR_HL();  // Rotate Right for HL
-  void PFX_RR_R8();  // Rotate Right for r8
-  void PFX_SWAP_HL();
-  void PFX_SWAP_R8();
+  void R8_Wrapper(void (CPU::*ins)());
+  void HL_Wrapper(void (CPU::*ins)());
+
+  void PFX_SET();
+  void PFX_BIT();
+  void PFX_RES();
+  void PFX_SLA();
+  void PFX_RL();
+  void PFX_RR();
+  void PFX_SWAP();
+  void PFX_SRA();
+  void PFX_SRL();
+  void PFX_RLC();
+  void PFX_RRC();
 
 private:
   uint16_t SP;           // stack pointer

@@ -76,7 +76,7 @@ void CPU::LD_SP_HL() {
 // SECTION: Arithmetic instructions
 
 void CPU::ADDA() {
-  set_flag(Flags::zero, AF.hi + operand == 0);
+  set_flag(Flags::zero, !(AF.hi + operand));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, (AF.hi & 0xF) + (operand & 0xF) > 0xF);
   // set_flag(Flags::carry, (uint16_t)AF.hi + (uint16_t)operand > 0xFF);
@@ -87,7 +87,7 @@ void CPU::ADDA() {
 
 void CPU::ADCA() {
   uint8_t carry = get_flag(Flags::carry);
-  set_flag(Flags::zero, AF.hi + operand + carry == 0);
+  set_flag(Flags::zero, !(AF.hi + operand + carry));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, (AF.hi & 0xF) + (operand & 0xF) + carry > 0xF);
   // set_flag(Flags::carry, (uint16_t)AF.hi + (uint16_t)operand + carry > 0xFF);
@@ -97,7 +97,7 @@ void CPU::ADCA() {
 }
 
 void CPU::SUBA() {
-  set_flag(Flags::zero, AF.hi - operand == 0);
+  set_flag(Flags::zero, !(AF.hi - operand));
   set_flag(Flags::neg, 1);
   set_flag(Flags::half_carry, (AF.hi & 0xF) - (operand & 0xF) < 0);
   set_flag(Flags::carry, AF.hi < operand);
@@ -107,7 +107,7 @@ void CPU::SUBA() {
 
 void CPU::SBCA() {
   uint8_t carry = get_flag(Flags::carry);
-  set_flag(Flags::zero, AF.hi - operand - carry == 0);
+  set_flag(Flags::zero, !(AF.hi - operand - carry));
   set_flag(Flags::neg, 1);
   set_flag(Flags::half_carry, (AF.hi & 0xF) - (operand & 0xF) - carry < 0);
   set_flag(Flags::carry, AF.hi < operand + carry);
@@ -118,7 +118,7 @@ void CPU::SBCA() {
 void CPU::ANDA() {
   AF.hi = AF.hi & operand;
 
-  set_flag(Flags::zero, AF.hi == 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 1);
   set_flag(Flags::carry, 0);
@@ -127,7 +127,7 @@ void CPU::ANDA() {
 void CPU::XORA() {
   AF.hi = AF.hi ^ operand;
 
-  set_flag(Flags::zero, AF.hi == 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, 0);
@@ -135,14 +135,14 @@ void CPU::XORA() {
 
 void CPU::ORA() {
   AF.hi = AF.hi | operand;
-  set_flag(Flags::zero, AF.hi == 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, 0);
 }
 
 void CPU::CPA() {
-  set_flag(Flags::zero, AF.hi - operand == 0);
+  set_flag(Flags::zero, !(AF.hi - operand));
   set_flag(Flags::neg, 1);
   set_flag(Flags::half_carry, (AF.hi & 0xF) - (operand & 0xF) < 0);
   set_flag(Flags::carry, AF.hi < operand);
@@ -360,7 +360,7 @@ void CPU::JR_NC() {
 void CPU::RLCA() {
   uint8_t carry = (AF.hi & 0x80) >> 7;
   AF.hi = (AF.hi << 1) | carry;
-  set_flag(Flags::zero, 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, carry);
@@ -369,7 +369,7 @@ void CPU::RLCA() {
 void CPU::RLA() {
   uint8_t carry = (AF.hi & 0x80) >> 7;
   AF.hi = (AF.hi << 1) | get_flag(Flags::carry);
-  set_flag(Flags::zero, 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, carry);
@@ -378,7 +378,7 @@ void CPU::RLA() {
 void CPU::RRCA() {
   uint8_t carry = AF.hi & 0x01;
   AF.hi = (AF.hi >> 1) | (carry << 7);
-  set_flag(Flags::zero, 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, carry);
@@ -387,7 +387,7 @@ void CPU::RRCA() {
 void CPU::RRA() {
   uint8_t carry = AF.hi & 0x01;
   AF.hi = (AF.hi >> 1) | (get_flag(Flags::carry) << 7);
-  set_flag(Flags::zero, 0);
+  set_flag(Flags::zero, !(AF.hi));
   set_flag(Flags::neg, 0);
   set_flag(Flags::half_carry, 0);
   set_flag(Flags::carry, carry);
@@ -422,7 +422,7 @@ void CPU::DAA() {
     bcd_a += correction;
   }
 
-  set_flag(Flags::zero, bcd_a == 0);
+  set_flag(Flags::zero, !bcd_a);
   set_flag(Flags::half_carry, 0);
   AF.hi = bcd_a;
 }

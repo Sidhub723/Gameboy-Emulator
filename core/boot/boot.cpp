@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 #include "core/boot/boot.h"
 
 Boot::Boot(std::string file_path) {
